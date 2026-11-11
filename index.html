@@ -1,0 +1,914 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI Episode One: make your first anime-style episode with AI tools</title>
+<meta name="description" content="A free, fact-checked beginner course on making original anime-style videos with AI tools, from a first clip to a finished episode, with honest AI disclosure.">
+<meta name="apple-mobile-web-app-title" content="AI Episode One">
+<meta name="theme-color" content="#FCFCFA">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+/* Studio paperwork: white animation paper, yellow correction sheets, blue and red pencil. */
+:root{
+  --paper:#FCFCFA; --ink:#24252B; --muted:#5B5F6B; --line:#C4C8D0; --hole:#D9DCE1;
+  --blue:#1F55A8; --red:#B3261E; --yellow:#FFF1A8; --on-yellow:#24252B; --ok:#1B6B3A;
+  --btn-h:48px; --gutter:20px; --r1:4px; --r2:8px; --nav-h:60px;
+  --display:"Barlow Condensed","Arial Narrow","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Serif 4",Charter,"Iowan Old Style",Georgia,serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#1C1D22; --ink:#EFEDE6; --muted:#B1B5C0; --line:#474B57; --hole:#0E0F12;
+    --blue:#9CBCFF; --red:#FF9A90; --yellow:#4A4215; --on-yellow:#F4F1E4; --ok:#7FD6A0;
+    color-scheme:dark;
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.6}
+[hidden]{display:none!important}
+a{color:var(--blue);text-underline-offset:3px}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);line-height:1.15;margin:0}
+h1{font-size:36px;font-weight:700}
+h2{font-size:26px;font-weight:700;margin-top:32px}
+h3{font-size:20px;font-weight:600;margin-top:24px}
+h1:focus{outline:none}
+p,ul,ol{margin:12px 0 0}
+ul,ol{padding-left:24px}
+li{margin-top:8px}
+
+/* Header: the peg-bar holes punched in every sheet of animation paper */
+.top{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:2px solid var(--ink);padding:calc(8px + env(safe-area-inset-top,0px)) var(--gutter) 8px}
+.pegs{display:flex;justify-content:center;align-items:center;gap:48px;height:12px}
+.pegs span{display:block;background:var(--hole);border:1px solid var(--line);height:8px;width:32px;border-radius:var(--r1)}
+.pegs span:nth-child(2){width:12px;height:12px;border-radius:50%}
+.brand{display:block;margin-top:8px;font-family:var(--display);font-weight:700;font-size:22px;color:var(--ink);text-decoration:none;line-height:1.2}
+
+.sheet{max-width:680px;margin:0 auto;padding:24px var(--gutter) calc(var(--nav-h) + 48px + env(safe-area-inset-bottom,0px))}
+
+/* Bottom bar */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;background:var(--paper);border-top:2px solid var(--ink);padding:0 8px env(safe-area-inset-bottom,0px)}
+.nav a{flex:1;min-height:var(--nav-h);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:600;font-size:18px;color:var(--ink);text-decoration:none}
+.nav a[aria-current="page"]{text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:8px}
+
+/* The strip of boxes at the top of a storyboard sheet */
+.strip{display:flex;flex-wrap:wrap;gap:2px;margin-top:16px;background:var(--ink);border:2px solid var(--ink);border-radius:var(--r1);overflow:hidden;font-family:var(--display);font-weight:600;font-size:18px}
+.strip span{flex:1 1 auto;padding:8px 12px;background:var(--paper);white-space:nowrap}
+
+.note{color:var(--blue);font-style:italic;font-size:16px}
+.task{background:var(--yellow);color:var(--on-yellow);border-radius:var(--r1);padding:16px;margin-top:32px}
+.task h2{margin-top:0}
+.warn{border:2px solid var(--red);border-radius:var(--r1);padding:16px;margin-top:24px}
+.warn strong{color:var(--red);font-family:var(--display);font-size:20px;font-weight:600}
+.prompt{font-family:var(--mono);font-size:16px;line-height:1.5;border:2px dashed var(--line);border-radius:var(--r1);padding:12px;margin-top:12px;white-space:pre-wrap;overflow-wrap:anywhere}
+
+/* Buttons: one system, width decided per group */
+.btn{display:flex;align-items:center;justify-content:center;width:100%;height:var(--btn-h);padding:0 16px;border-radius:var(--r1);border:2px solid var(--ink);font-family:var(--display);font-weight:600;font-size:20px;line-height:1;cursor:pointer;text-decoration:none;background:transparent;color:var(--ink)}
+.btn-primary{background:var(--ink);color:var(--paper)}
+.btn-danger{border-color:var(--red);color:var(--red)}
+.actions{display:flex;flex-direction:column;gap:8px;margin-top:24px}
+@media (min-width:600px){.actions{flex-direction:row}.actions .btn{flex:1}}
+
+/* Lesson list: rows of a production schedule */
+.cuts{list-style:none;padding:0;margin-top:16px;border-top:2px solid var(--ink)}
+.cuts li{margin:0;border-bottom:1px solid var(--line)}
+.cuts a,.cuts .soon{display:grid;grid-template-columns:48px 1fr;column-gap:12px;align-items:center;min-height:64px;padding:8px 0;color:var(--ink);text-decoration:none}
+.cuts .n{font-family:var(--display);font-weight:700;font-size:26px;text-align:center;border:2px solid var(--ink);border-radius:var(--r1);height:48px;line-height:44px}
+.cuts .soon .n{border-color:var(--line);color:var(--muted)}
+.cuts .t{font-family:var(--display);font-weight:600;font-size:22px;line-height:1.2}
+.cuts .s{display:block;font-family:var(--body);font-weight:400;font-size:16px;color:var(--muted)}
+.cuts .s.done{color:var(--ok)}
+#chart{display:block;width:100%;height:auto;margin-top:16px}
+
+/* Forms */
+.field{margin-top:16px}
+.field label,.lab{display:block;font-family:var(--display);font-weight:600;font-size:18px}
+.field .hint{display:block;font-size:16px;color:var(--muted)}
+input[type=text],input[type=number],select,textarea{width:100%;min-height:48px;margin-top:4px;padding:8px 12px;font:inherit;font-size:18px;color:var(--ink);background:var(--paper);border:2px solid var(--ink);border-radius:var(--r1)}
+textarea{min-height:96px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.tick{display:flex;align-items:flex-start;gap:12px;min-height:48px;padding:8px 0;border-bottom:1px solid var(--line)}
+.tick input{flex:none;width:24px;height:24px;margin:4px 0 0;accent-color:var(--ink)}
+.shot{border-top:2px solid var(--ink);margin-top:24px;padding-top:8px}
+.totals{border:2px solid var(--ink);border-radius:var(--r1);padding:16px;margin-top:24px}
+.totals p:first-child{margin-top:0}
+.big{font-family:var(--display);font-weight:700;font-size:26px}
+details{margin-top:24px;border-top:1px solid var(--line);padding-top:12px}
+summary{font-family:var(--display);font-weight:600;font-size:20px;padding:12px 0;cursor:pointer}
+.tool{border-top:1px solid var(--line);padding:16px 0}
+.tool:first-of-type{border-top:2px solid var(--ink);margin-top:16px}
+.tool h2{margin-top:0}
+.unchecked{color:var(--red);font-size:16px}
+
+/* Undo bar */
+#toast{position:fixed;left:var(--gutter);right:var(--gutter);bottom:calc(var(--nav-h) + 12px + env(safe-area-inset-bottom,0px));z-index:7;display:flex;align-items:center;gap:12px;background:var(--ink);color:var(--paper);border-radius:var(--r2);padding:8px 8px 8px 16px;font-size:16px;max-width:640px;margin:0 auto}
+#toast span{flex:1}
+#toast button{height:var(--btn-h);padding:0 16px;border:2px solid var(--paper);border-radius:var(--r1);background:transparent;color:var(--paper);font-family:var(--display);font-weight:600;font-size:20px;cursor:pointer}
+
+@media (min-width:800px){
+  body{font-size:19px}
+  h1{font-size:44px}
+}
+@media (prefers-reduced-motion:no-preference){.btn,.nav a{transition:opacity .15s}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="pegs" aria-hidden="true"><span></span><span></span><span></span></div>
+  <a class="brand" href="#home">AI Episode One</a>
+</header>
+
+<main class="sheet" id="main">
+
+<!-- ================= HOME ================= -->
+<section data-page="home">
+  <h1 tabindex="-1">Make your first anime-style episode</h1>
+  <p>A free course for complete beginners. You start with one short clip and finish with an original episode you can post, made with AI tools and labelled honestly.</p>
+  <p>Animators call each shot a cut, so this course has 11 cuts instead of lessons.</p>
+  <svg id="chart" viewBox="0 0 340 44" role="img" aria-label="Progress"></svg>
+  <p class="s" id="chartText"></p>
+  <div class="actions"><a class="btn btn-primary" id="continueBtn" href="#cut-1">Start Cut 1</a></div>
+  <ol class="cuts" id="cutList">
+    <li><a href="#cut-1" data-cut="1"><span class="n">1</span><span class="t">Make your first clip<span class="s"></span></span></a></li>
+    <li><a href="#cut-2" data-cut="2"><span class="n">2</span><span class="t">From idea to script<span class="s"></span></span></a></li>
+    <li><a href="#cut-3" data-cut="3"><span class="n">3</span><span class="t">Design a character you own<span class="s"></span></span></a></li>
+    <li><a href="#cut-4" data-cut="4"><span class="n">4</span><span class="t">Storyboard and shot list<span class="s"></span></span></a></li>
+    <li><a href="#cut-5" data-cut="5"><span class="n">5</span><span class="t">A still frame for every shot<span class="s"></span></span></a></li>
+    <li><a href="#cut-6" data-cut="6"><span class="n">6</span><span class="t">Turn frames into video<span class="s"></span></span></a></li>
+    <li><a href="#cut-7" data-cut="7"><span class="n">7</span><span class="t">Talking characters and lip sync<span class="s"></span></span></a></li>
+    <li><a href="#cut-8" data-cut="8"><span class="n">8</span><span class="t">Voices, music and sound<span class="s"></span></span></a></li>
+    <li><a href="#cut-9" data-cut="9"><span class="n">9</span><span class="t">Edit, caption and go vertical<span class="s"></span></span></a></li>
+    <li><a href="#cut-10" data-cut="10"><span class="n">10</span><span class="t">Publish with honest AI labels<span class="s"></span></span></a></li>
+    <li><a href="#cut-11" data-cut="11"><span class="n">11</span><span class="t">Plan a series and compare tools<span class="s"></span></span></a></li>
+  </ol>
+</section>
+
+<!-- ================= CUT 1 ================= -->
+<section data-page="cut-1" hidden>
+  <h1 tabindex="-1">Make your first clip</h1>
+  <div class="strip"><span>Cut 1 of 11</span><span>About 20 minutes</span><span>Cost: free</span></div>
+  <p>By the end of this cut you will have three short anime-style clips, and you will know which look you like best.</p>
+
+  <h2>What you need</h2>
+  <ul>
+    <li>A Google account. Flow is for adults 18 and over, and it works in Canada.</li>
+    <li>Flow, Google's video tool, at <a href="https://flow.google.com" target="_blank" rel="noopener noreferrer">flow.google.com</a>. You do not need to pay. Every account gets 50 credits a day.</li>
+  </ul>
+
+  <h2>How credits work</h2>
+  <p>A credit is what Flow charges for each video. With the Omni Flash 1.2 model, a rough draft at 360p costs 1 credit for each second. A sharper 720p clip costs 3 credits for each second.</p>
+  <p>So a 5 second draft costs 5 credits, and 50 credits is enough for ten drafts a day. Credits you do not use are gone the next day.</p>
+  <p class="note">Checked on Google's Flow help pages on 11 Nov 2026. Prices change, so read the cost Flow shows before you generate.</p>
+  <div class="warn"><strong>Busy hours</strong>
+    <p>Free accounts sometimes cannot make video at busy times, roughly 2 to 5 p.m. UTC. In Ontario that is about 9 a.m. to noon in winter and 10 a.m. to 1 p.m. in summer. Images still work then.</p>
+  </div>
+
+  <h2>Steps</h2>
+  <ol>
+    <li>Open Flow and start a new project.</li>
+    <li>In the prompt box, choose the model name, then choose Video.</li>
+    <li>Set the model to Omni Flash 1.2, the quality to 360p, the shape to tall (9:16), the length to 5 seconds and the number of outputs to 1. Flow charges for each output.</li>
+    <li>Type your prompt and choose Generate.</li>
+  </ol>
+  <p class="note">Flow's button names may differ a little from these. The steps follow Google's help page as read on 11 Nov 2026.</p>
+
+  <h2>Your first prompt</h2>
+  <p>Google's advice is to name five things: the subject, the action, the place, the lighting and the style. Here is one to copy.</p>
+  <p class="prompt" id="p1">Hand-drawn 2D anime style with clean line art and flat cel shading. A girl with short silver hair and a yellow raincoat waits at a bus stop at night and looks up as snow starts to fall. Soft light from a street lamp. The camera slowly pushes in.</p>
+  <div class="actions"><button type="button" class="btn" data-copy="p1">Copy this prompt</button></div>
+  <p>Describe the look in your own words. Do not name a show, a studio or an artist. That keeps your work original, and it is the rule this whole course follows.</p>
+
+  <div class="task">
+    <h2>Do this now</h2>
+    <p>Make three 5 second drafts of one idea. Change one thing each time: the style words, the lighting or the camera move. That costs 15 credits.</p>
+    <p>Download the one you like best, and write down the words that made it work.</p>
+  </div>
+  <p>You are ready for Cut 2 when you can say which style words gave you the look you want.</p>
+  <div class="actions">
+    <a class="btn btn-primary" href="#cut-2" data-done="1">Done. Go to Cut 2</a>
+    <a class="btn" href="#home">All cuts</a>
+  </div>
+</section>
+
+<!-- ================= CUT 2 ================= -->
+<section data-page="cut-2" hidden>
+  <h1 tabindex="-1">From idea to script</h1>
+  <div class="strip"><span>Cut 2 of 11</span><span>About 30 minutes</span><span>Cost: free</span></div>
+  <p>By the end of this cut you will have a script for a 30 to 45 second episode, written one shot at a time.</p>
+
+  <h2>Keep the story small</h2>
+  <p>One character wants one thing. Something is in the way. By the end, one thing has changed.</p>
+  <p>Example: a girl waits for the last bus. It never comes. She walks home and sees that the snow has made her street beautiful.</p>
+
+  <h2>Think in shots</h2>
+  <p>A shot is one unbroken piece of video. On a free account, Omni Flash 1.2 makes shots of 3 to 10 seconds.</p>
+  <p>Plan 6 to 9 shots of 4 to 6 seconds each. Short shots cost less, and a mistake is quicker to redo.</p>
+  <p class="note">Shot lengths checked on Google's Flow help pages on 11 Nov 2026.</p>
+
+  <h2>Write what we see and what we hear</h2>
+  <p>For each shot, write two things: what we see, and what we hear. Keep speech to one short line per shot. Cut 7 covers talking characters.</p>
+  <ul>
+    <li>Shot 1. We see the girl alone at the bus stop at night. We hear wind.</li>
+    <li>Shot 2. We see her check her phone, then the empty road. She says: &ldquo;It&rsquo;s not coming.&rdquo;</li>
+    <li>Shot 3. We see the first snowflake land on her sleeve. We hear soft music start.</li>
+  </ul>
+
+  <div class="task">
+    <h2>Do this now</h2>
+    <p>Open the Shot list tool and enter your shots. The tool adds up the running time and the credits. Aim for 30 to 45 seconds in total.</p>
+    <div class="actions"><a class="btn btn-primary" href="#tool-shots">Open the Shot list</a></div>
+  </div>
+  <p>You are ready for Cut 3 when your shot list tells the whole story without you explaining it.</p>
+  <div class="actions">
+    <a class="btn btn-primary" href="#cut-3" data-done="2">Done. Go to Cut 3</a>
+    <a class="btn" href="#home">All cuts</a>
+  </div>
+</section>
+
+<!-- ================= CUT 3 ================= -->
+<section data-page="cut-3" hidden>
+  <h1 tabindex="-1">Design a character you own</h1>
+  <div class="strip"><span>Cut 3 of 11</span><span>About 40 minutes</span><span>Cost: free</span></div>
+  <p>By the end of this cut you will have a character bible and a model sheet: one image that shows your character from the front, the side and the back. Later cuts reuse it so the character looks the same in every shot.</p>
+
+  <h2>Original means original</h2>
+  <p>Build the character from your own description. Do not start from an existing character and change details. If a friend can name who it reminds them of, redesign it.</p>
+  <p class="note">Film studios are suing an AI image company over pictures of their characters. No ruling was found when checked on 11 Nov 2026. This is general information, not legal advice.</p>
+
+  <h2>Write the bible first</h2>
+  <p>A character bible is a short page that fixes how the character looks. Open the Character bible tool and fill in the shape, hair, eyes, outfit, colours and what never changes. The tool turns it into one description you can paste into any prompt.</p>
+  <div class="actions"><a class="btn" href="#tool-bible">Open the Character bible</a></div>
+
+  <h2>Make the model sheet</h2>
+  <p>In Flow, images do not use credits. A free account can make up to 20 images a day with the Nano Banana Pro model and up to 400 a day with the lighter models.</p>
+  <p class="note">Image limits checked on Google's Flow help pages on 11 Nov 2026.</p>
+  <ol>
+    <li>In your Flow project, choose the model name, then choose Image.</li>
+    <li>Paste your character description, then add the lines below.</li>
+    <li>Make one character per request. Asking for several at once tends to blend them.</li>
+    <li>Pick the best sheet. Then ask for close-ups of the face: calm, happy, sad and surprised.</li>
+    <li>Save the result as a character in Flow. You can then call it in a prompt by typing @ and its name.</li>
+  </ol>
+  <p class="prompt" id="p3">Character model sheet on a plain white background. Full body, front view, side view and back view. Neutral pose. Hand-drawn 2D anime style, clean line art, flat colours.</p>
+  <div class="actions"><button type="button" class="btn" data-copy="p3">Copy these lines</button></div>
+
+  <h2>What you own</h2>
+  <p>In the United States, work made only by an AI tool cannot be copyrighted, because the law requires a human author. Canada has no court ruling yet. The parts you write and arrange yourself, like the bible and the script, are the human-made parts.</p>
+  <p class="note">Checked on 11 Nov 2026. Sources are on the Sources page. This is general information, not legal advice.</p>
+
+  <div class="task">
+    <h2>Do this now</h2>
+    <p>Make a model sheet and a face sheet for your main character. Then do the look-alike check in the Character bible tool.</p>
+  </div>
+  <p>You are done when the same character is easy to recognise in every view.</p>
+  <div class="actions">
+    <a class="btn btn-primary" href="#cut-4" data-done="3">Done. Go to Cut 4</a>
+    <a class="btn" href="#home">All cuts</a>
+  </div>
+</section>
+
+<!-- ================= CUT 4 ================= -->
+<section data-page="cut-4" hidden>
+  <h1 tabindex="-1">Storyboard and shot list</h1>
+  <div class="strip"><span>Cut 4 of 11</span><span>About 25 minutes</span><span>Cost: free</span></div>
+  <p>By the end of this cut you will have a rough drawing for every shot and a finished shot list.</p>
+  <h2>What a storyboard is</h2>
+  <p>A storyboard is a row of rough pictures, one for each shot, that shows what the camera sees. Stick figures on paper are fine. Nobody else needs to see it.</p>
+  <h2>Three choices for every shot</h2>
+  <ul>
+    <li>Shot size. A wide shot shows the place. A medium shot shows what a person is doing. A close-up shows what they feel.</li>
+    <li>Camera. Keep it still unless you have a reason to move it. Use one move per shot at most.</li>
+    <li>What is new. Each shot should show one thing the last shot did not.</li>
+  </ul>
+  <p>Try not to put two shots of the same size next to each other. A change of size keeps the eye interested.</p>
+  <h2>Plan for a tall screen</h2>
+  <p>Draw tall boxes, because phones show video at 9:16. Keep the important part in the middle of the box. Apps place buttons and captions over the bottom and the right edge.</p>
+  <h2>Plan your talking shots now</h2>
+  <p>If a character speaks, make that shot a medium shot or a close-up with the face toward the camera. Cut 7 explains why.</p>
+  <div class="task">
+    <h2>Do this now</h2>
+    <p>Draw one box for each shot. Then open the Shot list and add the shot size and camera move to each entry. Check that the running time is still 30 to 45 seconds.</p>
+    <div class="actions"><a class="btn btn-primary" href="#tool-shots">Open the Shot list</a></div>
+  </div>
+  <p>You are ready for Cut 5 when someone else can follow the story from your drawings alone.</p>
+  <div class="actions"><a class="btn btn-primary" href="#cut-5" data-done="4">Done. Go to Cut 5</a><a class="btn" href="#home">All cuts</a></div>
+</section>
+
+<!-- ================= CUT 5 ================= -->
+<section data-page="cut-5" hidden>
+  <h1 tabindex="-1">A still frame for every shot</h1>
+  <div class="strip"><span>Cut 5 of 11</span><span>About 45 minutes</span><span>Cost: free</span></div>
+  <p>By the end of this cut you will have one approved picture for each shot. Each picture becomes the start of a video in Cut 6.</p>
+  <h2>Why start from a picture</h2>
+  <p>A video that starts from a picture you approved is easier to control than one made from words alone. Images also cost no credits in Flow, so this is the cheapest place to fix mistakes.</p>
+  <h2>Steps</h2>
+  <ol>
+    <li>In your Flow project, choose the model name, then choose Image. Set the shape to tall (9:16).</li>
+    <li>Type @ and your character's name. You can also add the model sheet as a reference image. Flow calls reference images ingredients.</li>
+    <li>Open the Prompt builder, fill in the shot, leave the spoken line empty, and paste the prompt into Flow.</li>
+    <li>Make two to four versions and keep the one closest to your model sheet.</li>
+    <li>Note which picture belongs to which shot number.</li>
+  </ol>
+  <div class="actions"><a class="btn" href="#tool-prompt">Open the Prompt builder</a></div>
+  <h2>Check each frame</h2>
+  <ul>
+    <li>The hair, outfit and colours match the model sheet, and the detail that never changes is there.</li>
+    <li>Hands and faces look right.</li>
+    <li>Nothing in the frame looks like a known character, a logo or broken lettering.</li>
+  </ul>
+  <h2>Fix it instead of starting over</h2>
+  <p>Flow can change an image from a short instruction, such as &ldquo;Make the raincoat yellow&rdquo;. It keeps the earlier versions, so you lose nothing by trying.</p>
+  <p class="note">Image editing, references and free image limits checked on Google's Flow help pages on 11 Nov 2026.</p>
+  <div class="task">
+    <h2>Do this now</h2>
+    <p>Make one approved frame for each shot in your list.</p>
+  </div>
+  <p>You are ready for Cut 6 when your frames, in order, tell the story like a comic.</p>
+  <div class="actions"><a class="btn btn-primary" href="#cut-6" data-done="5">Done. Go to Cut 6</a><a class="btn" href="#home">All cuts</a></div>
+</section>
+
+<!-- ================= CUT 6 ================= -->
+<section data-page="cut-6" hidden>
+  <h1 tabindex="-1">Turn frames into video</h1>
+  <div class="strip"><span>Cut 6 of 11</span><span>About 60 minutes</span><span>Cost: free credits</span></div>
+  <p>By the end of this cut your first three shots will be moving.</p>
+  <h2>Two ways to use your pictures</h2>
+  <h3>Frames to Video</h3>
+  <p>Your picture becomes the first frame of the clip. With Omni Flash 1.2 this works on the Flow website, not in the Flow phone app. This course could not confirm how well the website works in a phone's browser. The Veo 3.1 Lite model also does it, in clips of 4, 6 or 8 seconds at 720p for 10 credits each.</p>
+  <h3>Ingredients to Video</h3>
+  <p>You give Flow your character and other reference pictures and describe the shot. With Omni Flash 1.2 this makes clips of 3 to 10 seconds on a free account. Talking shots in Cut 7 use this way, because saved voices only work with ingredients.</p>
+  <p class="note">Checked on Google's Flow help pages on 11 Nov 2026.</p>
+  <h2>Write a motion prompt</h2>
+  <p>The picture already carries the look. The prompt only needs to say what moves: first the character, then the camera. Use one action and one camera move.</p>
+  <p class="prompt" id="p6">She looks up and holds out her hand as snow starts to fall. The camera slowly pushes in.</p>
+  <div class="actions"><button type="button" class="btn" data-copy="p6">Copy this prompt</button></div>
+  <h2>Draft cheap, then finish</h2>
+  <p>Test the motion at 360p, which costs 1 credit a second. When a draft works, make that shot again at 720p, which costs 3 credits a second. Set the number of outputs to 1.</p>
+  <h2>Judge each try</h2>
+  <ul>
+    <li>The character still matches the model sheet at the end of the clip.</li>
+    <li>The movement is the one you asked for.</li>
+    <li>Hands, faces and backgrounds do not bend, melt or flicker.</li>
+  </ul>
+  <p>Most shots need more than one try. Keep the best one and move on.</p>
+  <div class="warn"><strong>Busy hours</strong><p>Free accounts sometimes cannot make video at about 9 a.m. to noon Ontario time in winter, and 10 a.m. to 1 p.m. in summer.</p></div>
+  <div class="task">
+    <h2>Do this now</h2>
+    <p>Animate your first three shots as 360p drafts, with up to three tries each.</p>
+  </div>
+  <p>You are ready for Cut 7 when you have one try you would keep for each of the three shots.</p>
+  <div class="actions"><a class="btn btn-primary" href="#cut-7" data-done="6">Done. Go to Cut 7</a><a class="btn" href="#home">All cuts</a></div>
+</section>
+
+<!-- ================= CUT 7 ================= -->
+<section data-page="cut-7" hidden>
+  <h1 tabindex="-1">Talking characters and lip sync</h1>
+  <div class="strip"><span>Cut 7 of 11</span><span>About 45 minutes</span><span>Cost: free credits</span></div>
+  <p>By the end of this cut one character will say a line in their own voice, with the mouth moving to match.</p>
+  <h2>How it works</h2>
+  <p>Omni Flash makes the voice and the mouth movement together, from the line you write in the prompt. Flow will not add or change speech in a video you upload. So a talking shot has to be made with its line in it.</p>
+  <h2>Give each character one voice</h2>
+  <ol>
+    <li>Choose the Omni Flash model, then Video, then Ingredients.</li>
+    <li>Under the prompt, choose Add, then Voices. Each voice has a short sample you can play.</li>
+    <li>To make your own, choose Create New Voice. Pick a base voice, name it, and describe how it should change, such as &ldquo;quiet and a little shy&rdquo;.</li>
+    <li>In the prompt, type @Voice and the name of the voice.</li>
+  </ol>
+  <p class="note">Voice steps follow Google's Flow help page as read on 11 Nov 2026. Button names may differ a little.</p>
+  <h2>Write the line</h2>
+  <p>Put the words in quotation marks and say who speaks. Use one short line per shot.</p>
+  <p class="prompt" id="p7">Mira looks at the empty road and says: &quot;It's not coming.&quot; The camera stays still.</p>
+  <div class="actions"><button type="button" class="btn" data-copy="p7">Copy this prompt</button></div>
+  <h2>Frame it so the mouth can be seen</h2>
+  <p>Use a medium shot or a close-up, with the face toward the camera and one speaker in the shot. Keep the head fairly still.</p>
+  <h2>Check it twice</h2>
+  <ul>
+    <li>Watch with the sound off. The mouth should start and stop with the line.</li>
+    <li>Watch with the sound on. The voice should be the right one and every word should be correct.</li>
+  </ul>
+  <h2>When it will not match</h2>
+  <p>After three tries, change the shot instead. Show the listener's face while the line is heard. Show the speaker from behind or from far away. Or make the line a thought, spoken over a silent shot. Hand-drawn animation has long used the same tricks.</p>
+  <p class="note">No independent test of lip-sync accuracy on anime-style characters was found on 11 Nov 2026, so trust your own eyes. Kling and Seedance also make speech with lip sync. Cut 11 shows how to compare them.</p>
+  <div class="task">
+    <h2>Do this now</h2>
+    <p>Save a voice for your main character and make one talking shot with it.</p>
+  </div>
+  <p>You are ready for Cut 8 when the shot passes the sound-off check.</p>
+  <div class="actions"><a class="btn btn-primary" href="#cut-8" data-done="7">Done. Go to Cut 8</a><a class="btn" href="#home">All cuts</a></div>
+</section>
+
+<!-- ================= CUT 8 ================= -->
+<section data-page="cut-8" hidden>
+  <h1 tabindex="-1">Voices, music and sound</h1>
+  <div class="strip"><span>Cut 8 of 11</span><span>About 30 minutes</span><span>Cost: free</span></div>
+  <p>By the end of this cut you will have chosen music you are allowed to use, and your clips will have the sounds you want.</p>
+  <h2>Three layers of sound</h2>
+  <ul>
+    <li>Voices. You made these in Cut 7.</li>
+    <li>Sound effects. Add a sentence to the prompt that says what we hear, such as &ldquo;We hear wind and a bus far away&rdquo;.</li>
+    <li>Music. Add one track in the edit, in Cut 9.</li>
+  </ul>
+  <p>Music that starts and stops inside each clip sounds choppy once the clips are joined. Ask for no music in your video prompts, and add one track over the whole episode later.</p>
+  <h2>Music you are allowed to use</h2>
+  <h3>YouTube Audio Library</h3>
+  <p>Free music and sound effects for your YouTube videos, found in YouTube Studio. You can filter for tracks that ask for a credit.</p>
+  <p class="note">Read on YouTube's help page on 11 Nov 2026.</p>
+  <h3>The app's own sounds</h3>
+  <p>TikTok and Instagram have sound libraries inside the app. Their rules for each kind of account were not checked for this course, so read them in the app.</p>
+  <h3>AI music</h3>
+  <p>Suno's free plan has no commercial rights and no song downloads. Its Pro plan, at US$10 a month, adds downloads and commercial use rights.</p>
+  <p class="note">Read on Suno's pricing page on 11 Nov 2026. Read its terms before you rely on those rights.</p>
+  <h2>Keep a sound log</h2>
+  <p>For each voice, effect and track, write down its name, where it came from and the date. You will need this in Cut 10, and again if anyone asks.</p>
+  <div class="task">
+    <h2>Do this now</h2>
+    <p>Choose one music track for your episode and write its source in your sound log.</p>
+  </div>
+  <p>You are ready for Cut 9 when you can say where every sound in your episode came from.</p>
+  <div class="actions"><a class="btn btn-primary" href="#cut-9" data-done="8">Done. Go to Cut 9</a><a class="btn" href="#home">All cuts</a></div>
+</section>
+
+<!-- ================= CUT 9 ================= -->
+<section data-page="cut-9" hidden>
+  <h1 tabindex="-1">Edit, caption and go vertical</h1>
+  <div class="strip"><span>Cut 9 of 11</span><span>About 60 minutes</span><span>Cost: free</span></div>
+  <p>By the end of this cut you will have one finished video file.</p>
+  <h2>Choose an editor</h2>
+  <p>Flow has a Scenebuilder for putting clips in order. Phone editors such as CapCut and Instagram's Edits add music, captions and trimming.</p>
+  <p class="unchecked">The free limits of CapCut and Edits were not checked on the makers' own pages.</p>
+  <h2>Steps in any editor</h2>
+  <ol>
+    <li>Start a tall project: 9:16, 1080 by 1920.</li>
+    <li>Add your best try of each shot, in order.</li>
+    <li>Trim the start and end of each clip. Cut while something is moving, and remove any frozen moment.</li>
+    <li>Add your music and lower it until every voice is easy to hear.</li>
+    <li>Add captions for every spoken line. Read each one and fix the names.</li>
+    <li>Export at 1080p.</li>
+  </ol>
+  <h2>The first two seconds</h2>
+  <p>Open on your most interesting picture. Do not open on a title card.</p>
+  <h2>Leave the AI marks alone</h2>
+  <p>Do not crop out a watermark or strip the hidden AI information from the file. Cut 10 explains why honest labels protect you.</p>
+  <div class="task">
+    <h2>Do this now</h2>
+    <p>Edit the whole episode. Watch it on your phone at arm's length, once with sound and once muted.</p>
+  </div>
+  <p>You are ready for Cut 10 when the story is clear both ways.</p>
+  <div class="actions"><a class="btn btn-primary" href="#cut-10" data-done="9">Done. Go to Cut 10</a><a class="btn" href="#home">All cuts</a></div>
+</section>
+
+<!-- ================= CUT 10 ================= -->
+<section data-page="cut-10" hidden>
+  <h1 tabindex="-1">Publish with honest AI labels</h1>
+  <div class="strip"><span>Cut 10 of 11</span><span>About 20 minutes</span><span>Cost: free</span></div>
+  <p>By the end of this cut your episode will be posted and labelled correctly.</p>
+  <h2>What each platform asks for</h2>
+  <ul>
+    <li>YouTube requires its AI use setting when content looks real, and when AI music is the main focus of the video. Clearly animated content does not need it.</li>
+    <li>Instagram requires its AI label for realistic AI voices or music, even when the picture is a cartoon.</li>
+    <li>TikTok requires its AI label for realistic content and encourages it for anything made fully with AI.</li>
+  </ul>
+  <p class="note">Read on each platform's help pages on 11 Nov 2026. These rules change every few months.</p>
+  <h2>This course labels every video</h2>
+  <p>Turn the label on each time, even when it is optional. Flow's files carry an invisible watermark and hidden information that say they were made with AI, and platforms can read these. A video that hides it and gets found out loses trust.</p>
+  <p>Say it in your caption as well, in plain words.</p>
+  <p class="prompt" id="p10">Made with AI tools. Story, characters and editing by me.</p>
+  <div class="actions"><button type="button" class="btn" data-copy="p10">Copy this line</button></div>
+  <h2>Expect mixed reactions</h2>
+  <p>Some viewers dislike AI animation and will say so. Answer politely or not at all. Never claim the work is hand-drawn.</p>
+  <h2>About money</h2>
+  <p>This course does not promise views or income. YouTube does not pay for videos that look mass-produced or repeat one template, so make each episode its own story.</p>
+  <p>To earn from ads, a YouTube channel needs 1,000 subscribers plus 4,000 watch hours in 12 months or 10 million Shorts views in 90 days. YouTube says its Partner Program changes on 1 Feb 2027.</p>
+  <p class="note">Read on YouTube's help page on 11 Nov 2026.</p>
+  <p class="unchecked">Reported by other sites, not found on YouTube's page: from 1 Feb 2027 new applicants will need 8,000 watch hours or 20 million Shorts views.</p>
+  <div class="task">
+    <h2>Do this now</h2>
+    <p>Go through the checklist, then post your episode.</p>
+    <div class="actions"><a class="btn btn-primary" href="#tool-check">Open the checklist</a></div>
+  </div>
+  <div class="actions"><a class="btn btn-primary" href="#cut-11" data-done="10">Done. Go to Cut 11</a><a class="btn" href="#home">All cuts</a></div>
+</section>
+
+<!-- ================= CUT 11 ================= -->
+<section data-page="cut-11" hidden>
+  <h1 tabindex="-1">Plan a series and compare tools</h1>
+  <div class="strip"><span>Cut 11 of 11</span><span>About 45 minutes</span><span>Cost: free</span></div>
+  <p>By the end of this cut you will have a one-page plan for a series, and a fair way to decide whether a paid tool is worth it.</p>
+  <h2>Write a series bible</h2>
+  <p>A series bible is one page that keeps every episode consistent. It holds:</p>
+  <ul>
+    <li>The idea of the series in one sentence.</li>
+    <li>The cast, with a character bible for each.</li>
+    <li>The style line you use in every prompt, word for word.</li>
+    <li>The places that come back, each with a reference picture of the empty set.</li>
+    <li>One sentence for each of the next five episodes.</li>
+  </ul>
+  <h2>Reuse what you built</h2>
+  <p>Model sheets, saved voices, set pictures and your style line carry over to every episode. The story should not. Each episode needs its own beginning, problem and change.</p>
+  <h2>Budget an episode</h2>
+  <p>A 40 second episode with three 360p tries per shot costs 120 credits. Making the kept shots again at 720p costs another 120. That is 240 credits, or about five days of free credits. The Shot list does this sum for your own episode.</p>
+  <p class="note">Based on Flow's prices as read on 11 Nov 2026.</p>
+  <h2>Compare tools fairly</h2>
+  <ol>
+    <li>Pick three shots: one with action, one talking shot and one with two characters.</li>
+    <li>Pay for one month of one other tool. The Upgrades page lists them.</li>
+    <li>Make the same three shots on both tools, from the same pictures and prompts.</li>
+    <li>Judge each on four things: does the character match, is the motion right, does the mouth match the voice, and what did each kept shot cost.</li>
+    <li>Keep the tool that won, and cancel the other before it renews.</li>
+  </ol>
+  <div class="actions"><a class="btn" href="#upgrades">See the Upgrades page</a></div>
+  <div class="task">
+    <h2>Do this now</h2>
+    <p>Write your series bible on one page, with five episode sentences.</p>
+  </div>
+  <p>That is the whole course. Your next episode starts at Cut 2.</p>
+  <div class="actions"><a class="btn btn-primary" href="#home" data-done="11">Done. Back to all cuts</a></div>
+</section>
+
+<!-- ================= TOOLS ================= -->
+<section data-page="tools" hidden>
+  <h1 tabindex="-1">Tools</h1>
+  <p>Four working documents for your episode. What you type stays in this browser.</p>
+  <div class="tool"><h2>Character bible</h2><p>Fix how a character looks, and get one description to paste into prompts.</p><div class="actions"><a class="btn" href="#tool-bible">Open Character bible</a></div></div>
+  <div class="tool"><h2>Shot list and cost</h2><p>Plan each shot and see the running time and the credits before you spend any.</p><div class="actions"><a class="btn" href="#tool-shots">Open Shot list</a></div></div>
+  <div class="tool"><h2>Shot prompt builder</h2><p>Build a clear prompt for one shot, with a check for names you should not use.</p><div class="actions"><a class="btn" href="#tool-prompt">Open Prompt builder</a></div></div>
+  <div class="tool"><h2>Before you publish</h2><p>A checklist for originality, rights and honest AI labels.</p><div class="actions"><a class="btn" href="#tool-check">Open Checklist</a></div></div>
+</section>
+
+<section data-page="tool-bible" hidden>
+  <h1 tabindex="-1">Character bible</h1>
+  <div class="field"><label for="charSel">Character</label><select id="charSel"></select></div>
+  <div class="actions"><button type="button" class="btn" id="charNew">Add a new character</button></div>
+  <div id="charForm">
+    <div class="field"><label for="c_name">Name</label><input type="text" id="c_name" data-c="name" autocomplete="off" maxlength="60"></div>
+    <div class="field"><label for="c_role">Who they are</label><span class="hint">Age range and role, like &ldquo;a shy teenage courier&rdquo;.</span><input type="text" id="c_role" data-c="role" autocomplete="off" maxlength="120"></div>
+    <div class="field"><label for="c_shape">Body shape and height</label><input type="text" id="c_shape" data-c="shape" autocomplete="off" maxlength="120"></div>
+    <div class="field"><label for="c_hair">Hair</label><input type="text" id="c_hair" data-c="hair" autocomplete="off" maxlength="120"></div>
+    <div class="field"><label for="c_eyes">Eyes and face</label><input type="text" id="c_eyes" data-c="eyes" autocomplete="off" maxlength="120"></div>
+    <div class="field"><label for="c_outfit">Outfit</label><input type="text" id="c_outfit" data-c="outfit" autocomplete="off" maxlength="160"></div>
+    <div class="field"><label for="c_colours">Three main colours</label><input type="text" id="c_colours" data-c="colours" autocomplete="off" maxlength="120"></div>
+    <div class="field"><label for="c_never">What never changes</label><span class="hint">A scar, a hair clip, a missing glove.</span><input type="text" id="c_never" data-c="never" autocomplete="off" maxlength="160"></div>
+    <div class="field"><label for="c_voice">Voice</label><span class="hint">How they sound, in your own words.</span><input type="text" id="c_voice" data-c="voice" autocomplete="off" maxlength="160"></div>
+
+    <h2>Description to paste</h2>
+    <p class="prompt" id="charOut"></p>
+    <div class="actions"><button type="button" class="btn btn-primary" data-copy="charOut">Copy description</button></div>
+
+    <h2>Look-alike check</h2>
+    <label class="tick"><input type="checkbox" data-ck="own"><span>I wrote this description myself. I did not start from an existing character.</span></label>
+    <label class="tick"><input type="checkbox" data-ck="names"><span>My prompts do not name a show, a studio or an artist.</span></label>
+    <label class="tick"><input type="checkbox" data-ck="friend"><span>I showed the model sheet to someone, and they could not name a character it copies.</span></label>
+    <div class="actions"><button type="button" class="btn btn-danger" id="charDel">Delete this character</button></div>
+  </div>
+  <div class="actions"><a class="btn" href="#tools">All tools</a></div>
+</section>
+
+<section data-page="tool-shots" hidden>
+  <h1 tabindex="-1">Shot list and cost</h1>
+  <p>Add one entry for each shot. Plan three tries per shot, because most shots need more than one. Use 360p for cheap drafts and 720p for the shots you keep.</p>
+  <div id="shotList"></div>
+  <div class="actions"><button type="button" class="btn btn-primary" id="shotAdd">Add a shot</button></div>
+  <div class="totals" aria-live="polite">
+    <p><span class="lab">Running time</span><span class="big" id="tTime">0 seconds</span></p>
+    <p><span class="lab">Credits for all tries</span><span class="big" id="tCred">0 credits</span></p>
+    <p id="tDays"></p>
+  </div>
+  <details>
+    <summary>Prices used for this estimate</summary>
+    <p class="note">Google Flow, Omni Flash 1.2. Checked on Google's help pages on 11 Nov 2026. Change the numbers if Flow shows different ones.</p>
+    <div class="field"><label for="r360">Credits per second, 360p draft</label><input type="number" id="r360" inputmode="decimal" min="0" step="0.5"></div>
+    <div class="field"><label for="r720">Credits per second, 720p</label><input type="number" id="r720" inputmode="decimal" min="0" step="0.5"></div>
+    <div class="field"><label for="rDay">Free credits per day</label><input type="number" id="rDay" inputmode="numeric" min="1" step="1"></div>
+  </details>
+  <div class="actions"><a class="btn" href="#tools">All tools</a></div>
+</section>
+
+<section data-page="tool-prompt" hidden>
+  <h1 tabindex="-1">Shot prompt builder</h1>
+  <p>Fill in what you know. The prompt builds itself below.</p>
+  <div class="field"><label for="pb_style">Style</label><span class="hint">Describe the look. Do not name a show, a studio or an artist.</span><input type="text" id="pb_style" data-p="style" autocomplete="off" maxlength="200"></div>
+  <div class="field"><label for="pb_char">Character</label><select id="pb_char" data-p="char"></select></div>
+  <div class="field"><label for="pb_action">What happens</label><input type="text" id="pb_action" data-p="action" autocomplete="off" maxlength="200"></div>
+  <div class="field"><label for="pb_place">Place and time</label><input type="text" id="pb_place" data-p="place" autocomplete="off" maxlength="160"></div>
+  <div class="field"><label for="pb_light">Lighting</label><input type="text" id="pb_light" data-p="light" autocomplete="off" maxlength="160"></div>
+  <div class="field"><label for="pb_size">Shot size</label><select id="pb_size" data-p="size">
+    <option value="">Not set</option><option>Wide shot</option><option>Full body shot</option><option>Medium shot from the waist up</option><option>Close-up of the face</option><option>Extreme close-up</option></select></div>
+  <div class="field"><label for="pb_cam">Camera move</label><select id="pb_cam" data-p="cam">
+    <option value="">Not set</option><option>The camera stays still</option><option>The camera slowly pushes in</option><option>The camera slowly pulls back</option><option>The camera pans left to right</option><option>The camera follows the character</option><option>The camera tilts up</option></select></div>
+  <div class="field"><label for="pb_line">Spoken line</label><span class="hint">One short line, or leave it empty.</span><input type="text" id="pb_line" data-p="line" autocomplete="off" maxlength="120"></div>
+
+  <h2>Your prompt</h2>
+  <p class="prompt" id="pbOut"></p>
+  <div class="warn" id="pbWarn" hidden><strong>Check this prompt</strong><p id="pbWarnText"></p></div>
+  <div class="actions"><button type="button" class="btn btn-primary" data-copy="pbOut">Copy prompt</button><a class="btn" href="#tools">All tools</a></div>
+</section>
+
+<section data-page="tool-check" hidden>
+  <h1 tabindex="-1">Before you publish</h1>
+  <p>Tick each line for the video you are about to post. This list does not promise views or income.</p>
+  <h2>Original work</h2>
+  <label class="tick"><input type="checkbox" data-k="o1"><span>Every character is my own design.</span></label>
+  <label class="tick"><input type="checkbox" data-k="o2"><span>No prompt named a show, a studio or an artist.</span></label>
+  <label class="tick"><input type="checkbox" data-k="o3"><span>No real person's face or voice is in the video.</span></label>
+  <h2>Rights</h2>
+  <label class="tick"><input type="checkbox" data-k="r1"><span>The plan I used for each tool allows this use. Free plans often do not allow videos that earn money.</span></label>
+  <label class="tick"><input type="checkbox" data-k="r2"><span>The music comes from a source I am allowed to use for this.</span></label>
+  <h2>Honest AI labels</h2>
+  <label class="tick"><input type="checkbox" data-k="d1"><span>YouTube: I turned on the AI use setting. YouTube requires it when content looks real or when AI music is the main focus. This course turns it on every time.</span></label>
+  <label class="tick"><input type="checkbox" data-k="d2"><span>Instagram: I added the AI label. It is required for realistic AI voices or music, even when the picture is a cartoon.</span></label>
+  <label class="tick"><input type="checkbox" data-k="d3"><span>TikTok: I turned on the AI-generated content label. It is required for realistic content and encouraged for anything made fully with AI.</span></label>
+  <label class="tick"><input type="checkbox" data-k="d4"><span>My caption says in plain words that the video was made with AI tools.</span></label>
+  <label class="tick"><input type="checkbox" data-k="d5"><span>I did not crop out a watermark or strip the file's hidden AI information.</span></label>
+  <p class="note">Platform rules read on 11 Nov 2026. They change every few months. Sources are on the Sources page.</p>
+  <h2>Quality</h2>
+  <label class="tick"><input type="checkbox" data-k="q1"><span>The video is tall: 9:16, 1080 by 1920.</span></label>
+  <label class="tick"><input type="checkbox" data-k="q2"><span>I read every caption line for mistakes, including names.</span></label>
+  <label class="tick"><input type="checkbox" data-k="q3"><span>I watched it once with sound and once muted.</span></label>
+  <div class="actions"><button type="button" class="btn" id="checkClear">Clear all ticks</button><a class="btn" href="#tools">All tools</a></div>
+</section>
+
+<!-- ================= UPGRADES ================= -->
+<section data-page="upgrades" hidden>
+  <h1 tabindex="-1">Upgrade paths</h1>
+  <p>You can finish this course on Flow's free credits. These paid tools are for later, if you want sharper video, longer shots or a different look. Pay monthly, not yearly, because prices and models change fast.</p>
+  <p class="note">Rankings do not show one clear winner. Cut 11 has you run the same shots on two tools and judge for yourself.</p>
+  <p class="note">Prices were read on each maker's own page on 11 Nov 2026, in US dollars as shown to a visitor from the United States. Canadian prices were not checked. Lines in red come from other sites.</p>
+
+  <div class="tool"><h2>Google AI Plus and Pro</h2><p>More of what you already use. Plus adds 200 Flow credits a month, clips of 11 to 15 seconds, clip extension and 1080p upscaling. Pro adds 1,000 credits a month.</p><p>Plus is US$4.99 a month. Pro is US$19.99 a month.</p></div>
+  <div class="tool"><h2>Seedance 2.5, in Dreamina</h2><p>A video model from the makers of CapCut.</p><p>The Basic plan is US$15 a month after a discounted first month.</p><p class="unchecked">From a comparison dated 28 Oct 2026, not the maker's page: built for scenes that follow many reference pictures, and open to subscribers aged 16 and over.</p></div>
+  <div class="tool"><h2>Kling</h2><p>Paid plans allow commercial use.</p><p>The Standard plan is US$8.80 a month after a US$6.99 first month, for 660 credits a month.</p><p class="unchecked">From a review dated 29 Oct 2026, not the maker's page: Kling 4.0 makes shots up to 30 seconds and costs 10 credits a second at 720p, which would make 660 credits about 66 seconds.</p></div>
+  <div class="tool"><h2>Hailuo</h2><p>Plans start from US$9.99 a month. The plan details did not load when this page was checked, so read them before you pay.</p><p class="unchecked">From a comparison dated 28 Oct 2026, not the maker's page: strong at bringing a still picture to life.</p></div>
+  <div class="tool"><h2>Wan</h2><p>The Pro plan is US$5 a month when billed yearly, for 300 credits a month. The monthly price was not read.</p><p class="unchecked">From a comparison dated 28 Oct 2026, not the maker's page: Wan 3.0 makes shots up to 30 seconds.</p></div>
+  <div class="tool"><h2>Vidu</h2><p>Its own page lists smooth 2D animation and keeping several references consistent.</p><p>The Standard plan is US$10 a month, or US$8.25 a month billed yearly, for 800 credits a month.</p></div>
+  <div class="tool"><h2>Midjourney</h2><p>For character art and still frames. Its plan page lists only paid plans.</p><p>The Basic plan is US$10 a month.</p></div>
+  <div class="tool"><h2>ElevenLabs</h2><p>Extra voices. The free plan gives 10,000 credits a month with no commercial licence. The Starter plan adds the licence and 30,000 credits.</p><p>Starter is US$6 a month.</p></div>
+  <div class="tool"><h2>Suno</h2><p>Music. The free plan gives 50 credits a day, with no commercial rights and no song downloads. The Pro plan adds 2,500 credits a month, downloads and commercial use rights.</p><p>Pro is US$10 a month.</p></div>
+</section>
+
+<!-- ================= SOURCES ================= -->
+<section data-page="sources" hidden>
+  <h1 tabindex="-1">Sources and privacy</h1>
+  <h2>Where the facts come from</h2>
+  <p>Every fact about a tool or a rule was read on the page listed here, on the date shown. These facts go out of date quickly.</p>
+  <ul>
+    <li>Google Flow credits, read 11 Nov 2026: <a href="https://support.google.com/flow/answer/16526234" target="_blank" rel="noopener noreferrer">Manage your Google Flow credits</a></li>
+    <li>Google Flow models and clip lengths, read 11 Nov 2026: <a href="https://support.google.com/flow/answer/16352836" target="_blank" rel="noopener noreferrer">Flow models and supported features</a></li>
+    <li>Google Flow age and countries, read 11 Nov 2026: <a href="https://support.google.com/flow/answer/16353544" target="_blank" rel="noopener noreferrer">Where you can use Google Flow</a></li>
+    <li>Google Flow steps, characters and voices, read 11 Nov 2026: <a href="https://support.google.com/flow/answer/16353334" target="_blank" rel="noopener noreferrer">Create videos in Google Flow</a></li>
+    <li>Google Flow image limits, read 11 Nov 2026: <a href="https://support.google.com/flow/answer/16729550" target="_blank" rel="noopener noreferrer">Create and edit images in Google Flow</a></li>
+    <li>YouTube AI disclosure, read 11 Nov 2026: <a href="https://support.google.com/youtube/answer/14328491" target="_blank" rel="noopener noreferrer">Disclosing use of GenAI content</a></li>
+    <li>Instagram AI labels, read 11 Nov 2026: <a href="https://help.instagram.com/761121959519495" target="_blank" rel="noopener noreferrer">Label AI content on Instagram</a></li>
+    <li>TikTok AI labels, read 11 Nov 2026: <a href="https://support.tiktok.com/en/using-tiktok/creating-videos/ai-generated-content" target="_blank" rel="noopener noreferrer">AI-generated content</a></li>
+    <li>Copyright cases, article read 11 Nov 2026: <a href="https://www.nortonrosefulbright.com/en/knowledge/publications/ce8eaa5f/ai-in-litigation-series-an-update-on-ai-copyright-cases-in-2026" target="_blank" rel="noopener noreferrer">Norton Rose Fulbright, AI copyright cases in 2026</a></li>
+    <li>YouTube Audio Library, read 11 Nov 2026: <a href="https://support.google.com/youtube/answer/3376882" target="_blank" rel="noopener noreferrer">Use music and sound effects from the Audio Library</a></li>
+    <li>YouTube Partner Program, read 11 Nov 2026: <a href="https://support.google.com/youtube/answer/72851" target="_blank" rel="noopener noreferrer">Partner Program overview and eligibility</a></li>
+    <li>Paid tool prices, each read on the maker's page on 11 Nov 2026: <a href="https://one.google.com/about/google-ai-plans/" target="_blank" rel="noopener noreferrer">Google AI plans</a>, <a href="https://dreamina.capcut.com/pricing/dreamina-price" target="_blank" rel="noopener noreferrer">Dreamina</a>, <a href="https://kling.ai/app/membership/membership-plan" target="_blank" rel="noopener noreferrer">Kling</a>, <a href="https://hailuoai.video/subscribe" target="_blank" rel="noopener noreferrer">Hailuo</a>, <a href="https://create.wan.video/pricing" target="_blank" rel="noopener noreferrer">Wan</a>, <a href="https://www.vidu.com/pricing" target="_blank" rel="noopener noreferrer">Vidu</a>, <a href="https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans" target="_blank" rel="noopener noreferrer">Midjourney</a>, <a href="https://elevenlabs.io/pricing" target="_blank" rel="noopener noreferrer">ElevenLabs</a>, <a href="https://suno.com/pricing" target="_blank" rel="noopener noreferrer">Suno</a></li>
+    <li>Lines marked in red, comparison dated 28 Oct 2026: <a href="https://www.genie-artificiel.com/en/ai-news/top-10-essential-ai-video-tools-in-2025/" target="_blank" rel="noopener noreferrer">Top 10 AI video tools in 2026</a></li>
+  </ul>
+  <h2>Privacy</h2>
+  <p>This app has no accounts and sends nothing you type to a server. Your progress, characters and shot lists are saved only in this browser, on this device. The fonts load from Google Fonts.</p>
+  <div class="actions"><button type="button" class="btn btn-danger" id="wipe">Clear my saved data</button></div>
+</section>
+
+</main>
+
+<nav class="nav" aria-label="Main">
+  <a href="#home" data-nav="home">Cuts</a>
+  <a href="#tools" data-nav="tools">Tools</a>
+  <a href="#upgrades" data-nav="upgrades">Upgrades</a>
+  <a href="#sources" data-nav="sources">Sources</a>
+</nav>
+<div id="toast" role="status" hidden><span id="toastMsg"></span><button type="button" id="toastBtn">Undo</button></div>
+
+<script>
+(function(){
+'use strict';
+var KEY='ai-episode-one:v1';
+var WRITTEN=11, TOTAL=11;
+var DEF={done:[],chars:[],cur:'',shots:[],rates:{r360:1,r720:3,day:50},check:{},prompt:{style:'Hand-drawn 2D anime style with clean line art and flat cel shading'}};
+var S=load();
+function load(){
+  var s=JSON.parse(JSON.stringify(DEF));
+  try{var raw=localStorage.getItem(KEY);if(raw){var o=JSON.parse(raw);if(o&&typeof o==='object'){for(var k in DEF){if(Object.prototype.hasOwnProperty.call(o,k)&&typeof o[k]===typeof DEF[k]&&Array.isArray(o[k])===Array.isArray(DEF[k]))s[k]=o[k];}}}}catch(e){}
+  return s;
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function $(id){return document.getElementById(id);}
+function el(tag,cls,text){var e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e;}
+function uid(){return 'i'+Date.now().toString(36)+Math.floor(Math.random()*1e6).toString(36);}
+function num(v,d){var n=parseFloat(v);return isFinite(n)&&n>=0?n:d;}
+
+/* ---------- router ---------- */
+var pages=[].slice.call(document.querySelectorAll('[data-page]'));
+function route(){
+  var id=(location.hash||'#home').slice(1);
+  var page=pages.filter(function(p){return p.getAttribute('data-page')===id;})[0];
+  if(!page){id='home';page=pages[0];}
+  pages.forEach(function(p){p.hidden=p!==page;});
+  var top=id.indexOf('cut-')===0?'home':id.indexOf('tool')===0?'tools':id;
+  [].forEach.call(document.querySelectorAll('[data-nav]'),function(a){if(a.getAttribute('data-nav')===top)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
+  if(id==='home')renderHome();
+  if(id==='tool-bible')renderBible();
+  if(id==='tool-shots')renderShots();
+  if(id==='tool-prompt')renderPrompt();
+  if(id==='tool-check')renderCheck();
+  window.scrollTo(0,0);
+  var h=page.querySelector('h1');if(h)h.focus({preventScroll:true});
+  document.title=(h?h.textContent+' | ':'')+'AI Episode One';
+}
+window.addEventListener('hashchange',route);
+
+/* ---------- home ---------- */
+function renderHome(){
+  var done=S.done.filter(function(n){return n>=1&&n<=WRITTEN;});
+  [].forEach.call(document.querySelectorAll('[data-cut]'),function(a){
+    var n=+a.getAttribute('data-cut'),s=a.querySelector('.s'),d=done.indexOf(n)>-1;
+    s.textContent=d?'Done':'Ready';s.className='s'+(d?' done':'');
+  });
+  var next=0;for(var i=1;i<=WRITTEN;i++){if(done.indexOf(i)<0){next=i;break;}}
+  var b=$('continueBtn');
+  if(next){b.href='#cut-'+next;b.textContent=(done.length?'Continue with Cut ':'Start Cut ')+next;}else{b.href='#cut-2';b.textContent='Start a new episode at Cut 2';}
+  var txt=done.length+' of '+TOTAL+' cuts done';
+  $('chartText').textContent=txt;
+  /* an animator's timing chart: one tick per cut, a filled mark for each one done */
+  var svg=$('chart'),NS='http://www.w3.org/2000/svg';
+  svg.setAttribute('aria-label',txt);while(svg.lastChild)svg.removeChild(svg.lastChild);
+  function add(tag,attrs){var e=document.createElementNS(NS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);svg.appendChild(e);}
+  add('line',{x1:10,y1:22,x2:330,y2:22,stroke:'var(--ink)','stroke-width':2});
+  for(var c=1;c<=TOTAL;c++){
+    var x=10+(c-1)*32,isDone=done.indexOf(c)>-1,written=c<=WRITTEN;
+    add('line',{x1:x,y1:12,x2:x,y2:32,stroke:written?'var(--ink)':'var(--line)','stroke-width':2});
+    if(isDone)add('circle',{cx:x,cy:22,r:7,fill:'var(--blue)'});
+  }
+}
+document.addEventListener('click',function(e){
+  var d=e.target.closest('[data-done]');
+  if(d){var n=+d.getAttribute('data-done');if(S.done.indexOf(n)<0){S.done.push(n);save();}}
+  var c=e.target.closest('[data-copy]');
+  if(c){copy($(c.getAttribute('data-copy')).textContent,c);}
+});
+function copy(text,btn){
+  var old=btn.textContent;
+  function ok(){btn.textContent='Copied';setTimeout(function(){btn.textContent=old;},1500);}
+  function no(){btn.textContent='Press and hold the text to copy';setTimeout(function(){btn.textContent=old;},2500);}
+  if(!text){return;}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(ok,no);}else{no();}
+}
+
+/* ---------- undo bar ---------- */
+var toastTimer=0,undoFn=null;
+function toast(msg,fn){
+  $('toastMsg').textContent=msg;undoFn=fn;$('toast').hidden=false;
+  clearTimeout(toastTimer);toastTimer=setTimeout(function(){$('toast').hidden=true;undoFn=null;},8000);
+}
+$('toastBtn').addEventListener('click',function(){if(undoFn)undoFn();$('toast').hidden=true;undoFn=null;});
+
+/* ---------- character bible ---------- */
+function curChar(){return S.chars.filter(function(c){return c.id===S.cur;})[0]||null;}
+function describe(c){
+  if(!c)return '';
+  var out=[];
+  var who=[c.name,c.role].filter(Boolean).join(', ');
+  if(who)out.push(who+'.');
+  if(c.shape)out.push(c.shape+'.');
+  if(c.hair)out.push('Hair: '+c.hair+'.');
+  if(c.eyes)out.push('Eyes and face: '+c.eyes+'.');
+  if(c.outfit)out.push('Outfit: '+c.outfit+'.');
+  if(c.colours)out.push('Main colours: '+c.colours+'.');
+  if(c.never)out.push('Always has: '+c.never+'.');
+  return out.join(' ');
+}
+function charLabel(c,i){return c.name||('Character '+(i+1));}
+function renderBible(){
+  var sel=$('charSel');sel.textContent='';
+  if(!S.chars.length){var o=el('option',null,'No characters yet');o.value='';sel.appendChild(o);}
+  S.chars.forEach(function(c,i){var o=el('option',null,charLabel(c,i));o.value=c.id;sel.appendChild(o);});
+  if(!curChar()&&S.chars.length)S.cur=S.chars[0].id;
+  sel.value=S.cur||'';
+  var c=curChar();$('charForm').hidden=!c;
+  if(!c)return;
+  [].forEach.call(document.querySelectorAll('[data-c]'),function(inp){inp.value=c[inp.getAttribute('data-c')]||'';});
+  [].forEach.call(document.querySelectorAll('[data-ck]'),function(inp){inp.checked=!!(c.ck&&c.ck[inp.getAttribute('data-ck')]);});
+  $('charOut').textContent=describe(c)||'Fill in the boxes above and the description appears here.';
+}
+$('charSel').addEventListener('change',function(){S.cur=this.value;save();renderBible();});
+$('charNew').addEventListener('click',function(){var c={id:uid(),ck:{}};S.chars.push(c);S.cur=c.id;save();renderBible();$('c_name').focus();});
+$('charForm').addEventListener('input',function(e){
+  var c=curChar();if(!c)return;
+  var f=e.target.getAttribute('data-c'),k=e.target.getAttribute('data-ck');
+  if(f){c[f]=e.target.value;$('charOut').textContent=describe(c)||'Fill in the boxes above and the description appears here.';
+    if(f==='name'){var o=$('charSel').selectedOptions[0];if(o)o.textContent=charLabel(c,S.chars.indexOf(c));}}
+  if(k){c.ck=c.ck||{};c.ck[k]=e.target.checked;}
+  save();
+});
+$('charDel').addEventListener('click',function(){
+  var c=curChar();if(!c)return;var i=S.chars.indexOf(c);
+  S.chars.splice(i,1);S.cur=S.chars.length?S.chars[0].id:'';save();renderBible();
+  toast('Character deleted.',function(){S.chars.splice(i,0,c);S.cur=c.id;save();renderBible();});
+});
+
+/* ---------- shot list and cost ---------- */
+function field(labelText,control,id){var w=el('div','field');var l=el('label',null,labelText);l.htmlFor=id;control.id=id;w.appendChild(l);w.appendChild(control);return w;}
+function options(sel,list,val){list.forEach(function(p){var o=el('option',null,p[1]);o.value=p[0];sel.appendChild(o);});sel.value=String(val);}
+function renderShots(){
+  var box=$('shotList');box.textContent='';
+  S.shots.forEach(function(s,i){
+    var w=el('div','shot');w.appendChild(el('h2',null,'Shot '+(i+1)));
+    var see=el('textarea');see.value=s.see||'';see.maxLength=300;see.addEventListener('input',function(){s.see=see.value;save();});
+    w.appendChild(field('What we see',see,'see'+s.id));
+    var line=el('input');line.type='text';line.value=s.line||'';line.maxLength=120;line.autocomplete='off';line.addEventListener('input',function(){s.line=line.value;save();});
+    w.appendChild(field('What we hear, or the spoken line',line,'line'+s.id));
+    var row=el('div','row');
+    var secs=el('select');options(secs,[3,4,5,6,7,8,9,10].map(function(n){return [n,n+' sec'];}),s.secs);
+    secs.addEventListener('change',function(){s.secs=+secs.value;save();totals();});
+    var takes=el('select');options(takes,[1,2,3,4,5,6].map(function(n){return [n,n+(n===1?' try':' tries')];}),s.takes);
+    takes.addEventListener('change',function(){s.takes=+takes.value;save();totals();});
+    var q=el('select');options(q,[['360','360p'],['720','720p']],s.q);
+    q.addEventListener('change',function(){s.q=q.value;save();totals();});
+    row.appendChild(field('Length',secs,'secs'+s.id));row.appendChild(field('Tries',takes,'takes'+s.id));row.appendChild(field('Quality',q,'q'+s.id));
+    w.appendChild(row);
+    var act=el('div','actions');var del=el('button','btn btn-danger','Delete shot '+(i+1));del.type='button';
+    del.addEventListener('click',function(){var at=S.shots.indexOf(s);S.shots.splice(at,1);save();renderShots();toast('Shot deleted.',function(){S.shots.splice(at,0,s);save();renderShots();});});
+    act.appendChild(del);w.appendChild(act);box.appendChild(w);
+  });
+  $('r360').value=S.rates.r360;$('r720').value=S.rates.r720;$('rDay').value=S.rates.day;
+  totals();
+}
+function totals(){
+  var time=0,cred=0;
+  S.shots.forEach(function(s){time+=s.secs;cred+=s.secs*s.takes*(s.q==='720'?S.rates.r720:S.rates.r360);});
+  cred=Math.round(cred*10)/10;
+  $('tTime').textContent=time+(time===1?' second':' seconds');
+  $('tCred').textContent=cred+(cred===1?' credit':' credits');
+  var day=S.rates.day>0?S.rates.day:50,days=Math.ceil(cred/day);
+  $('tDays').textContent=!S.shots.length?'Add a shot to see the cost.':cred<=day?'That fits in one day of free credits ('+day+' a day).':'That is about '+days+' days of free credits ('+day+' a day).';
+}
+$('shotAdd').addEventListener('click',function(){
+  var s={id:uid(),see:'',line:'',secs:5,takes:3,q:'360'};S.shots.push(s);save();renderShots();
+  var t=$('see'+s.id);if(t)t.focus();
+});
+[['r360','r360'],['r720','r720'],['rDay','day']].forEach(function(p){
+  $(p[0]).addEventListener('input',function(){S.rates[p[1]]=num(this.value,DEF.rates[p[1]]);save();totals();});
+});
+
+/* ---------- prompt builder ---------- */
+var RISKY=['style of','ghibli','pixar','disney','miyazaki','shinkai','naruto','pokemon','pok\u00e9mon','dragon ball','one piece','sailor moon','demon slayer','jujutsu','attack on titan','studio trigger','kyoto animation','toei','madhouse'];
+function renderPrompt(){
+  var sel=$('pb_char');sel.textContent='';
+  var none=el('option',null,'No saved character');none.value='';sel.appendChild(none);
+  S.chars.forEach(function(c,i){var o=el('option',null,charLabel(c,i));o.value=c.id;sel.appendChild(o);});
+  [].forEach.call(document.querySelectorAll('[data-p]'),function(inp){inp.value=S.prompt[inp.getAttribute('data-p')]||'';});
+  if(sel.value!==(S.prompt.char||''))sel.value='';
+  buildPrompt();
+}
+function sentence(t){t=(t||'').trim();if(!t)return '';return /[.!?]$/.test(t)?t:t+'.';}
+function buildPrompt(){
+  var p=S.prompt,out=[];
+  var c=S.chars.filter(function(x){return x.id===p.char;})[0];
+  if(p.style)out.push(sentence(p.style));
+  if(p.size)out.push(sentence(p.size));
+  if(c&&describe(c))out.push(describe(c));
+  if(p.action)out.push(sentence(p.action));
+  if(p.place)out.push(sentence(p.place));
+  if(p.light)out.push(sentence(p.light));
+  if(p.cam)out.push(sentence(p.cam));
+  if(p.line&&p.line.trim())out.push('The character says: "'+p.line.trim().replace(/"/g,'')+'"');
+  var text=out.join(' ');
+  $('pbOut').textContent=text||'Your prompt appears here.';
+  var low=text.toLowerCase(),hits=RISKY.filter(function(w){return low.indexOf(w)>-1;});
+  $('pbWarn').hidden=!hits.length;
+  if(hits.length)$('pbWarnText').textContent='This prompt mentions an existing work, studio or artist ("'+hits[0]+'"). Describe the look in your own words instead.';
+}
+document.querySelector('[data-page="tool-prompt"]').addEventListener('input',function(e){
+  var f=e.target.getAttribute('data-p');if(!f)return;S.prompt[f]=e.target.value;save();buildPrompt();
+});
+
+/* ---------- checklist ---------- */
+function renderCheck(){[].forEach.call(document.querySelectorAll('[data-k]'),function(i){i.checked=!!S.check[i.getAttribute('data-k')];});}
+document.querySelector('[data-page="tool-check"]').addEventListener('change',function(e){
+  var k=e.target.getAttribute('data-k');if(!k)return;S.check[k]=e.target.checked;save();
+});
+$('checkClear').addEventListener('click',function(){
+  var old=S.check;S.check={};save();renderCheck();
+  toast('Ticks cleared.',function(){S.check=old;save();renderCheck();});
+});
+
+/* ---------- privacy ---------- */
+$('wipe').addEventListener('click',function(){
+  if(!window.confirm('Clear everything saved in this browser? Your progress, characters, shot lists and ticks cannot be recovered.'))return;
+  try{localStorage.removeItem(KEY);}catch(e){}
+  S=load();location.hash='#home';route();
+});
+
+route();
+})();
+</script>
+</body>
+</html>
