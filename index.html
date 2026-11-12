@@ -7,7 +7,14 @@
 <title>AI Episode One: make your first anime-style episode with AI tools</title>
 <meta name="description" content="A free, fact-checked beginner course on making original anime-style videos with AI tools, from a first clip to a finished episode, with honest AI disclosure.">
 <meta name="apple-mobile-web-app-title" content="AI Episode One">
-<meta name="theme-color" content="#FCFCFA">
+<meta name="theme-color" content="#FCFCFA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1C1D22" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
@@ -44,11 +51,9 @@ p,ul,ol{margin:12px 0 0}
 ul,ol{padding-left:24px}
 li{margin-top:8px}
 
-/* Header: the peg-bar holes punched in every sheet of animation paper */
+/* Header: the scale of an animator's field guide, the chart used to plan what the camera sees */
 .top{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:2px solid var(--ink);padding:calc(8px + env(safe-area-inset-top,0px)) var(--gutter) 8px}
-.pegs{display:flex;justify-content:center;align-items:center;gap:48px;height:12px}
-.pegs span{display:block;background:var(--hole);border:1px solid var(--line);height:8px;width:32px;border-radius:var(--r1)}
-.pegs span:nth-child(2){width:12px;height:12px;border-radius:50%}
+.mark{height:12px;background:linear-gradient(var(--blue),var(--blue)) left bottom/100% 1px no-repeat,repeating-linear-gradient(90deg,var(--blue) 0 1px,transparent 1px 8px) left bottom/100% 5px no-repeat,repeating-linear-gradient(90deg,var(--blue) 0 1px,transparent 1px 40px) left bottom/100% 10px no-repeat;opacity:.75}
 .brand{display:block;margin-top:8px;font-family:var(--display);font-weight:700;font-size:22px;color:var(--ink);text-decoration:none;line-height:1.2}
 
 .sheet{max-width:680px;margin:0 auto;padding:24px var(--gutter) calc(var(--nav-h) + 48px + env(safe-area-inset-bottom,0px))}
@@ -97,11 +102,27 @@ textarea{min-height:96px;resize:vertical}
 .tick{display:flex;align-items:flex-start;gap:12px;min-height:48px;padding:8px 0;border-bottom:1px solid var(--line)}
 .tick input{flex:none;width:24px;height:24px;margin:4px 0 0;accent-color:var(--ink)}
 .shot{border-top:2px solid var(--ink);margin-top:24px;padding-top:8px}
+.tries{list-style:none;padding:0;margin-top:12px}
+.tries li{border-top:1px solid var(--line);padding-top:8px;margin-top:8px}
+.shot h3{margin-top:16px}
+.callout{border:2px solid var(--ink);border-radius:var(--r1);padding:16px;margin-top:24px}
+.callout strong{font-family:var(--display);font-size:20px;font-weight:600}
+.part{border-top:1px solid var(--line);padding-top:12px;margin-top:16px}
+.part .lab{color:var(--blue)}
+.part .prompt{margin-top:4px}
+.shots-ref{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.shots-ref figure{margin:0}
+.shots-ref svg{display:block;width:100%;height:auto;border:2px solid var(--ink);border-radius:var(--r1)}
+.shots-ref figcaption{font-family:var(--display);font-weight:600;font-size:16px;line-height:1.2;margin-top:4px}
+.term{font-family:var(--display);font-weight:600;font-size:19px}
 .totals{border:2px solid var(--ink);border-radius:var(--r1);padding:16px;margin-top:24px}
 .totals p:first-child{margin-top:0}
 .big{font-family:var(--display);font-weight:700;font-size:26px}
 details{margin-top:24px;border-top:1px solid var(--line);padding-top:12px}
-summary{font-family:var(--display);font-weight:600;font-size:20px;padding:12px 0;cursor:pointer}
+summary{display:block;list-style:none;position:relative;padding:12px 0 12px 28px;font-family:var(--display);font-weight:600;font-size:20px;cursor:pointer}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"+";position:absolute;left:0;top:10px;width:20px;text-align:center;font-family:var(--mono);font-weight:400;color:var(--blue)}
+details[open]>summary::before{content:"\2212"}
 .tool{border-top:1px solid var(--line);padding:16px 0}
 .tool:first-of-type{border-top:2px solid var(--ink);margin-top:16px}
 .tool h2{margin-top:0}
@@ -121,7 +142,7 @@ summary{font-family:var(--display);font-weight:600;font-size:20px;padding:12px 0
 </head>
 <body>
 <header class="top">
-  <div class="pegs" aria-hidden="true"><span></span><span></span><span></span></div>
+  <div class="mark" aria-hidden="true"></div>
   <a class="brand" href="#home">AI Episode One</a>
 </header>
 
@@ -170,24 +191,33 @@ summary{font-family:var(--display);font-weight:600;font-size:20px;padding:12px 0
     <p>Free accounts sometimes cannot make video at busy times, roughly 2 to 5 p.m. UTC. In Ontario that is about 9 a.m. to noon in winter and 10 a.m. to 1 p.m. in summer. Images still work then.</p>
   </div>
 
-  <h2>Steps</h2>
+  <h2>Find the settings</h2>
+  <p>Flow shows model names in more than one place, which is easy to get lost in. Use the ones inside the prompt box, the box where you type.</p>
   <ol>
     <li>Open Flow and start a new project.</li>
-    <li>In the prompt box, choose the model name, then choose Video.</li>
+    <li>Look at the prompt box. If Agent is turned on in it, click Agent to turn it off. The Agent is a chat helper, and the prompt box changes while it is on.</li>
+    <li>In the prompt box, click the model name. At first it says Nano Banana Pro, which is the image model. Choose Video.</li>
     <li>Set the model to Omni Flash 1.2, the quality to 360p, the shape to tall (9:16), the length to 5 seconds and the number of outputs to 1. Flow charges for each output.</li>
-    <li>Type your prompt and choose Generate.</li>
+    <li>Paste your prompt into the prompt box and click Generate.</li>
   </ol>
-  <p class="note">Flow's button names may differ a little from these. The steps follow Google's help page as read on 11 Nov 2026.</p>
+  <p class="note">The steps follow Google's Flow help pages as read on 11 Nov 2026. The Agent works on the website only. Button names may differ a little on your screen.</p>
 
-  <h2>Your first prompt</h2>
-  <p>Google's advice is to name five things: the subject, the action, the place, the lighting and the style. Here is one to copy.</p>
+  <h2>What goes in a prompt</h2>
+  <p>A prompt is the description you type. Google's advice is to say who is in the shot, what they do, where it is, what the light is like and how it is drawn. Here is one prompt taken apart.</p>
+  <div class="part"><span class="lab">How it is drawn</span><p class="prompt">Hand-drawn 2D anime style with clean line art and flat cel shading.</p><p>2D means flat drawings, like most TV anime, not 3D computer models. Line art is the outlines. Cel shading means shadows painted as solid patches of darker colour with sharp edges, the classic anime look.</p></div>
+  <div class="part"><span class="lab">Who is in it</span><p class="prompt">A girl with short silver hair and a yellow raincoat</p><p>Name the details you want to see. Two or three are enough.</p></div>
+  <div class="part"><span class="lab">What they do</span><p class="prompt">waits at a bus stop and looks up as snow starts to fall.</p><p>One clear action. A short clip has time for one thing to happen.</p></div>
+  <div class="part"><span class="lab">Where and when</span><p class="prompt">at night</p><p>The place and the time of day.</p></div>
+  <div class="part"><span class="lab">The light</span><p class="prompt">Soft light from a street lamp.</p><p>Where the light comes from and how it feels. Light sets the mood more than anything else.</p></div>
+  <div class="part"><span class="lab">The camera</span><p class="prompt">The camera slowly pushes in.</p><p>Push in means the camera moves closer. It draws the viewer toward her face.</p></div>
+  <h3>The whole prompt</h3>
   <p class="prompt" id="p1">Hand-drawn 2D anime style with clean line art and flat cel shading. A girl with short silver hair and a yellow raincoat waits at a bus stop at night and looks up as snow starts to fall. Soft light from a street lamp. The camera slowly pushes in.</p>
-  <div class="actions"><button type="button" class="btn" data-copy="p1">Copy this prompt</button></div>
+  <div class="actions"><button type="button" class="btn btn-primary" data-copy="p1">Copy the whole prompt</button><a class="btn" href="#words">More words you can use</a></div>
   <p>Describe the look in your own words. Do not name a show, a studio or an artist. That keeps your work original, and it is the rule this whole course follows.</p>
 
   <div class="task">
     <h2>Do this now</h2>
-    <p>Make three 5 second drafts of one idea. Change one thing each time: the style words, the lighting or the camera move. That costs 15 credits.</p>
+    <p>Make three 5 second drafts of one idea. Change one part each time, using words from the Prompt words page: the drawing style, the light or the camera. That costs 15 credits.</p>
     <p>Download the one you like best, and write down the words that made it work.</p>
   </div>
   <p>You are ready for Cut 2 when you can say which style words gave you the look you want.</p>
@@ -207,6 +237,10 @@ summary{font-family:var(--display);font-weight:600;font-size:20px;padding:12px 0
   <p>One character wants one thing. Something is in the way. By the end, one thing has changed.</p>
   <p>Example: a girl waits for the last bus. It never comes. She walks home and sees that the snow has made her street beautiful.</p>
 
+  <div class="callout"><strong>You are the director now</strong>
+    <p>In this cut you write the script: what happens in each shot. You do not write any prompts yet. Prompts for each shot come in Cut 5, once the whole story is planned.</p>
+  </div>
+
   <h2>Think in shots</h2>
   <p>A shot is one unbroken piece of video. On a free account, Omni Flash 1.2 makes shots of 3 to 10 seconds.</p>
   <p>Plan 6 to 9 shots of 4 to 6 seconds each. Short shots cost less, and a mistake is quicker to redo.</p>
@@ -222,7 +256,7 @@ summary{font-family:var(--display);font-weight:600;font-size:20px;padding:12px 0
 
   <div class="task">
     <h2>Do this now</h2>
-    <p>Open the Shot list tool and enter your shots. The tool adds up the running time and the credits. Aim for 30 to 45 seconds in total.</p>
+    <p>Open the Shot list and add one entry for each shot. Fill in only what we see and what we hear. That is your script. The tool adds up the running time and the credits. Aim for 30 to 45 seconds in total.</p>
     <div class="actions"><a class="btn btn-primary" href="#tool-shots">Open the Shot list</a></div>
   </div>
   <p>You are ready for Cut 3 when your shot list tells the whole story without you explaining it.</p>
@@ -236,28 +270,43 @@ summary{font-family:var(--display);font-weight:600;font-size:20px;padding:12px 0
 <section data-page="cut-3" hidden>
   <h1 tabindex="-1">Design a character you own</h1>
   <div class="strip"><span>Cut 3 of 11</span><span>About 40 minutes</span><span>Cost: free</span></div>
-  <p>By the end of this cut you will have a character bible and a model sheet: one image that shows your character from the front, the side and the back. Later cuts reuse it so the character looks the same in every shot.</p>
+  <p>By the end of this cut you will have a saved character in Flow, with pictures from the front, the side and the back. Later cuts call that character so it looks the same in every shot.</p>
 
   <h2>Original means original</h2>
   <p>Build the character from your own description. Do not start from an existing character and change details. If a friend can name who it reminds them of, redesign it.</p>
   <p class="note">Film studios are suing an AI image company over pictures of their characters. No ruling was found when checked on 11 Nov 2026. This is general information, not legal advice.</p>
 
-  <h2>Write the bible first</h2>
-  <p>A character bible is a short page that fixes how the character looks. Open the Character bible tool and fill in the shape, hair, eyes, outfit, colours and what never changes. The tool turns it into one description you can paste into any prompt.</p>
+  <h2>Step 1: Write the bible</h2>
+  <p>A character bible is a short page that fixes how the character looks. Open the Character bible and fill in each box. Each box has an example under it.</p>
   <div class="actions"><a class="btn" href="#tool-bible">Open the Character bible</a></div>
 
-  <h2>Make the model sheet</h2>
-  <p>In Flow, images do not use credits. A free account can make up to 20 images a day with the Nano Banana Pro model and up to 400 a day with the lighter models.</p>
-  <p class="note">Image limits checked on Google's Flow help pages on 11 Nov 2026.</p>
+  <h2>Step 2: Copy your character prompt</h2>
+  <p>This is your bible and the picture instructions in one prompt, ready to paste into Flow.</p>
+  <div id="c3Empty"><p>You have no characters yet. Fill in the Character bible first.</p></div>
+  <div id="c3Box">
+    <div class="field"><label for="c3Char">Character</label><select id="c3Char"></select></div>
+    <p class="prompt" id="c3Out"></p>
+    <div class="actions"><button type="button" class="btn btn-primary" data-copy="c3Out">Copy character prompt</button></div>
+    <details><summary>Optional second picture: face close-ups</summary>
+      <p>A second picture of the face helps Flow keep the expressions right.</p>
+      <p class="prompt" id="c3Faces"></p>
+      <div class="actions"><button type="button" class="btn" data-copy="c3Faces">Copy face prompt</button></div>
+    </details>
+  </div>
+
+  <h2>Step 3: Save the character in Flow</h2>
+  <p>Flow keeps characters in its Characters panel. A saved character keeps the same face, clothes and voice across your clips. You use it in a prompt by typing @ and its name.</p>
   <ol>
-    <li>In your Flow project, choose the model name, then choose Image.</li>
-    <li>Paste your character description, then add the lines below.</li>
-    <li>Make one character per request. Asking for several at once tends to blend them.</li>
-    <li>Pick the best sheet. Then ask for close-ups of the face: calm, happy, sad and surprised.</li>
-    <li>Save the result as a character in Flow. You can then call it in a prompt by typing @ and its name.</li>
+    <li>In your Flow project, click Characters on the left. If you already have a character, click New Character.</li>
+    <li>Paste your character prompt into the prompt box and click Generate. Images cost no credits.</li>
+    <li>Keep the best one or two pictures. A character needs at least one. The face close-ups make a good second picture.</li>
+    <li>Type the character's name. Use the same name as in your bible.</li>
+    <li>Click Select a voice, choose a voice, then click Add to Character. You can make a custom voice in Cut 7.</li>
+    <li>Click Done at the top right.</li>
   </ol>
-  <p class="prompt" id="p3">Character model sheet on a plain white background. Full body, front view, side view and back view. Neutral pose. Hand-drawn 2D anime style, clean line art, flat colours.</p>
-  <div class="actions"><button type="button" class="btn" data-copy="p3">Copy these lines</button></div>
+  <p class="note">Steps from Google's help page on creating characters, read 11 Nov 2026. On the phone app the Characters panel may be in a different place.</p>
+  <p>Make one character at a time. Keep your whole episode in one Flow project. Google's help says to open the project you made a character in to edit it, and this course could not confirm whether characters carry over to other projects.</p>
+  <p class="note">A free account can make up to 20 images a day with Nano Banana Pro and up to 400 a day with the lighter models. Checked on Google's Flow help pages on 11 Nov 2026.</p>
 
   <h2>What you own</h2>
   <p>In the United States, work made only by an AI tool cannot be copyrighted, because the law requires a human author. Canada has no court ruling yet. The parts you write and arrange yourself, like the bible and the script, are the human-made parts.</p>
@@ -265,9 +314,9 @@ summary{font-family:var(--display);font-weight:600;font-size:20px;padding:12px 0
 
   <div class="task">
     <h2>Do this now</h2>
-    <p>Make a model sheet and a face sheet for your main character. Then do the look-alike check in the Character bible tool.</p>
+    <p>Save your main character in Flow's Characters panel. Then do the look-alike check at the bottom of the Character bible.</p>
   </div>
-  <p>You are done when the same character is easy to recognise in every view.</p>
+  <p>You are done when the same character is easy to recognise in every picture.</p>
   <div class="actions">
     <a class="btn btn-primary" href="#cut-4" data-done="3">Done. Go to Cut 4</a>
     <a class="btn" href="#home">All cuts</a>
@@ -312,11 +361,11 @@ summary{font-family:var(--display);font-weight:600;font-size:20px;padding:12px 0
   <ol>
     <li>In your Flow project, choose the model name, then choose Image. Set the shape to tall (9:16).</li>
     <li>Type @ and your character's name. You can also add the model sheet as a reference image. Flow calls reference images ingredients.</li>
-    <li>Open the Prompt builder, fill in the shot, leave the spoken line empty, and paste the prompt into Flow.</li>
+    <li>Open the Shot list. On each shot, open Prompt and tries and click Build the prompt. Leave the spoken line empty for still frames, then copy the prompt into Flow.</li>
     <li>Make two to four versions and keep the one closest to your model sheet.</li>
     <li>Note which picture belongs to which shot number.</li>
   </ol>
-  <div class="actions"><a class="btn" href="#tool-prompt">Open the Prompt builder</a></div>
+  <div class="actions"><a class="btn" href="#tool-shots">Open the Shot list</a></div>
   <h2>Check each frame</h2>
   <ul>
     <li>The hair, outfit and colours match the model sheet, and the detail that never changes is there.</li>
@@ -331,6 +380,7 @@ summary{font-family:var(--display);font-weight:600;font-size:20px;padding:12px 0
     <p>Make one approved frame for each shot in your list.</p>
   </div>
   <p>You are ready for Cut 6 when your frames, in order, tell the story like a comic.</p>
+  <p>Stuck? <a href="#fixes">See fixes for common problems</a>.</p>
   <div class="actions"><a class="btn btn-primary" href="#cut-6" data-done="5">Done. Go to Cut 6</a><a class="btn" href="#home">All cuts</a></div>
 </section>
 
@@ -364,6 +414,7 @@ summary{font-family:var(--display);font-weight:600;font-size:20px;padding:12px 0
     <p>Animate your first three shots as 360p drafts, with up to three tries each.</p>
   </div>
   <p>You are ready for Cut 7 when you have one try you would keep for each of the three shots.</p>
+  <p>Stuck? <a href="#fixes">See fixes for common problems</a>.</p>
   <div class="actions"><a class="btn btn-primary" href="#cut-7" data-done="6">Done. Go to Cut 7</a><a class="btn" href="#home">All cuts</a></div>
 </section>
 
@@ -401,6 +452,7 @@ summary{font-family:var(--display);font-weight:600;font-size:20px;padding:12px 0
     <p>Save a voice for your main character and make one talking shot with it.</p>
   </div>
   <p>You are ready for Cut 8 when the shot passes the sound-off check.</p>
+  <p>Stuck? <a href="#fixes">See fixes for common problems</a>.</p>
   <div class="actions"><a class="btn btn-primary" href="#cut-8" data-done="7">Done. Go to Cut 8</a><a class="btn" href="#home">All cuts</a></div>
 </section>
 
@@ -432,6 +484,7 @@ summary{font-family:var(--display);font-weight:600;font-size:20px;padding:12px 0
     <p>Choose one music track for your episode and write its source in your sound log.</p>
   </div>
   <p>You are ready for Cut 9 when you can say where every sound in your episode came from.</p>
+  <p>Stuck? <a href="#fixes">See fixes for common problems</a>.</p>
   <div class="actions"><a class="btn btn-primary" href="#cut-9" data-done="8">Done. Go to Cut 9</a><a class="btn" href="#home">All cuts</a></div>
 </section>
 
@@ -535,11 +588,186 @@ summary{font-family:var(--display);font-weight:600;font-size:20px;padding:12px 0
 <!-- ================= TOOLS ================= -->
 <section data-page="tools" hidden>
   <h1 tabindex="-1">Tools</h1>
-  <p>Four working documents for your episode. What you type stays in this browser.</p>
+  <p>Working documents for your episode. What you type stays in this browser.</p>
+  <div class="tool"><h2>Fixes for common problems</h2><p>What to try when a character drifts, a mouth will not match, or the credits run out.</p><div class="actions"><a class="btn" href="#fixes">Open Fixes</a></div></div>
   <div class="tool"><h2>Character bible</h2><p>Fix how a character looks, and get one description to paste into prompts.</p><div class="actions"><a class="btn" href="#tool-bible">Open Character bible</a></div></div>
-  <div class="tool"><h2>Shot list and cost</h2><p>Plan each shot and see the running time and the credits before you spend any.</p><div class="actions"><a class="btn" href="#tool-shots">Open Shot list</a></div></div>
+  <div class="tool"><h2>Shot list</h2><p>Your script, shot by shot. Later it keeps each shot's prompt and your tries, and shows the cost before you spend any credits.</p><div class="actions"><a class="btn" href="#tool-shots">Open Shot list</a></div></div>
+  <div class="tool"><h2>Prompt words</h2><p>Plain explanations of drawing styles, shot sizes, camera moves and light, with words you can use.</p><div class="actions"><a class="btn" href="#words">Open Prompt words</a></div></div>
   <div class="tool"><h2>Shot prompt builder</h2><p>Build a clear prompt for one shot, with a check for names you should not use.</p><div class="actions"><a class="btn" href="#tool-prompt">Open Prompt builder</a></div></div>
   <div class="tool"><h2>Before you publish</h2><p>A checklist for originality, rights and honest AI labels.</p><div class="actions"><a class="btn" href="#tool-check">Open Checklist</a></div></div>
+</section>
+
+<section data-page="words" hidden>
+  <h1 tabindex="-1">Prompt words</h1>
+  <p>Words you can use in prompts, with what they mean. Pick one or two from each part. Describe the look in your own words, and never name a show, a studio or an artist.</p>
+
+  <h2>How it is drawn</h2>
+  <p><span class="term">2D</span><br>Flat drawings, like most TV anime, instead of 3D computer models.</p>
+  <p><span class="term">Hand-drawn</span><br>Looks drawn by a person, with small natural wobbles.</p>
+  <p><span class="term">Line art, clean line art</span><br>The outlines around everything. Clean means smooth, even lines.</p>
+  <p><span class="term">Cel shading</span><br>Shadows painted as solid patches of darker colour with sharp edges. The classic anime look.</p>
+  <p><span class="term">Flat colours</span><br>Each area filled with one solid colour, without soft blending.</p>
+  <p><span class="term">Soft painted background</span><br>Scenery that looks painted with a brush, behind sharper characters.</p>
+  <p><span class="term">Pastel colours</span><br>Pale, soft colours. Gentle and calm.</p>
+  <p><span class="term">Bold, saturated colours</span><br>Strong, bright colours. Lively and loud.</p>
+  <p><span class="term">Sketchy pencil lines</span><br>A rough, drawn-by-hand look, like a storyboard.</p>
+
+  <h2>How close the camera is</h2>
+  <p>This is the shot size. Changing it from shot to shot keeps the eye interested.</p>
+  <div class="shots-ref"><figure><svg viewBox="0 0 90 160" role="img" aria-label="Wide shot"><line x1="0" y1="152" x2="90" y2="152" stroke="var(--line)" stroke-width="2"/><g transform="translate(31 62) scale(0.62)"><g fill="var(--paper)" stroke="var(--ink)" stroke-width="2" vector-effect="non-scaling-stroke"><path d="M33 44 L57 44 L60 92 L30 92 Z" vector-effect="non-scaling-stroke"/><path d="M38 92 L36 148 M52 92 L54 148 M33 48 L24 84 M57 48 L66 84" fill="none" vector-effect="non-scaling-stroke"/><circle cx="45" cy="28" r="12" vector-effect="non-scaling-stroke"/><circle cx="41" cy="26" r="1.6" fill="var(--ink)" stroke="none"/><circle cx="49" cy="26" r="1.6" fill="var(--ink)" stroke="none"/></g></g></svg><figcaption>Wide shot</figcaption></figure><figure><svg viewBox="0 0 90 160" role="img" aria-label="Full body shot"><g fill="var(--paper)" stroke="var(--ink)" stroke-width="2" vector-effect="non-scaling-stroke"><path d="M33 44 L57 44 L60 92 L30 92 Z" vector-effect="non-scaling-stroke"/><path d="M38 92 L36 148 M52 92 L54 148 M33 48 L24 84 M57 48 L66 84" fill="none" vector-effect="non-scaling-stroke"/><circle cx="45" cy="28" r="12" vector-effect="non-scaling-stroke"/><circle cx="41" cy="26" r="1.6" fill="var(--ink)" stroke="none"/><circle cx="49" cy="26" r="1.6" fill="var(--ink)" stroke="none"/></g></svg><figcaption>Full body shot</figcaption></figure><figure><svg viewBox="0 0 90 160" role="img" aria-label="Medium shot"><g transform="translate(-45 -12) scale(2)"><g fill="var(--paper)" stroke="var(--ink)" stroke-width="2" vector-effect="non-scaling-stroke"><path d="M33 44 L57 44 L60 92 L30 92 Z" vector-effect="non-scaling-stroke"/><path d="M38 92 L36 148 M52 92 L54 148 M33 48 L24 84 M57 48 L66 84" fill="none" vector-effect="non-scaling-stroke"/><circle cx="45" cy="28" r="12" vector-effect="non-scaling-stroke"/><circle cx="41" cy="26" r="1.6" fill="var(--ink)" stroke="none"/><circle cx="49" cy="26" r="1.6" fill="var(--ink)" stroke="none"/></g></g></svg><figcaption>Medium shot</figcaption></figure><figure><svg viewBox="0 0 90 160" role="img" aria-label="Close-up"><g transform="translate(-112.5 -28) scale(3.5)"><g fill="var(--paper)" stroke="var(--ink)" stroke-width="2" vector-effect="non-scaling-stroke"><path d="M33 44 L57 44 L60 92 L30 92 Z" vector-effect="non-scaling-stroke"/><path d="M38 92 L36 148 M52 92 L54 148 M33 48 L24 84 M57 48 L66 84" fill="none" vector-effect="non-scaling-stroke"/><circle cx="45" cy="28" r="12" vector-effect="non-scaling-stroke"/><circle cx="41" cy="26" r="1.6" fill="var(--ink)" stroke="none"/><circle cx="49" cy="26" r="1.6" fill="var(--ink)" stroke="none"/></g></g></svg><figcaption>Close-up</figcaption></figure><figure><svg viewBox="0 0 90 160" role="img" aria-label="Extreme close-up"><g transform="translate(-315 -128) scale(8)"><g fill="var(--paper)" stroke="var(--ink)" stroke-width="2" vector-effect="non-scaling-stroke"><path d="M33 44 L57 44 L60 92 L30 92 Z" vector-effect="non-scaling-stroke"/><path d="M38 92 L36 148 M52 92 L54 148 M33 48 L24 84 M57 48 L66 84" fill="none" vector-effect="non-scaling-stroke"/><circle cx="45" cy="28" r="12" vector-effect="non-scaling-stroke"/><circle cx="41" cy="26" r="1.6" fill="var(--ink)" stroke="none"/><circle cx="49" cy="26" r="1.6" fill="var(--ink)" stroke="none"/></g></g></svg><figcaption>Extreme close-up</figcaption></figure></div>
+  <p><span class="term">Wide shot</span><br>Shows the whole place. Use it to set the scene.</p>
+  <p><span class="term">Full body shot</span><br>Head to feet. Shows what the body is doing.</p>
+  <p><span class="term">Medium shot</span><br>From the waist up. Good for talking and gestures.</p>
+  <p><span class="term">Close-up</span><br>Head and shoulders. Shows feelings.</p>
+  <p><span class="term">Extreme close-up</span><br>Just the eyes, or one small detail. Use it for a strong moment.</p>
+
+  <h2>How the camera moves</h2>
+  <p>Use one move per shot, or none.</p>
+  <p><span class="term">The camera stays still</span><br>The safest choice. The picture stays steady while the character moves.</p>
+  <p><span class="term">Pushes in</span><br>Moves slowly closer. Pulls the viewer into a feeling.</p>
+  <p><span class="term">Pulls back</span><br>Moves slowly away. Reveals where the character is, or how alone they are.</p>
+  <p><span class="term">Pans</span><br>Turns left or right, like turning your head. Shows more of a place.</p>
+  <p><span class="term">Tilts up or down</span><br>Turns up or down, like nodding. Shows how tall something is.</p>
+  <p><span class="term">Follows the character</span><br>Moves along with them as they walk or run.</p>
+
+  <h2>Where the camera looks from</h2>
+  <p><span class="term">Eye level</span><br>Level with the character's eyes. Feels normal and fair.</p>
+  <p><span class="term">Low angle</span><br>From below, looking up. The character seems strong or scary.</p>
+  <p><span class="term">High angle</span><br>From above, looking down. The character seems small or alone.</p>
+
+  <h2>The light</h2>
+  <p><span class="term">Soft daylight</span><br>Even, gentle light. Calm and ordinary.</p>
+  <p><span class="term">Golden hour</span><br>Warm, low sunlight near sunrise or sunset. Warm and hopeful.</p>
+  <p><span class="term">Night, lit by a street lamp</span><br>One pool of light in the dark. Quiet or lonely.</p>
+  <p><span class="term">Backlight</span><br>Light from behind the character, so their outline glows.</p>
+  <p><span class="term">Neon signs</span><br>Coloured light from signs. A city at night.</p>
+  <p><span class="term">Candlelight</span><br>Small, warm, flickering light. Close and cosy, or tense.</p>
+  <p><span class="term">Grey, cloudy light</span><br>Flat, cool light. Sad or still.</p>
+
+  <h2>What they do</h2>
+  <p>Use one clear action with a strong verb: looks up, runs, turns around, drops the cup, waves. A short clip has time for one thing to happen.</p>
+
+  <div class="actions"><a class="btn btn-primary" href="#tool-prompt">Open the Prompt builder</a><a class="btn" href="#tools">All tools</a></div>
+</section>
+
+<section data-page="fixes" hidden>
+  <h1 tabindex="-1">Fixes for common problems</h1>
+  <p>AI video goes wrong often, even for experienced makers. Find your problem and try the fixes in order. These are tips, not guarantees.</p>
+
+  <details><summary>The character looks different in each shot</summary>
+    <p>Why: each clip is made fresh, so details drift unless you hold them in place.</p>
+    <ol>
+      <li>Call the saved character with @ and its name, or add the model sheet as an ingredient.</li>
+      <li>Paste the same description from the Character bible every time.</li>
+      <li>Use the same style words, word for word, in every prompt.</li>
+      <li>Start from an approved still frame (Cut 5) instead of words alone.</li>
+      <li>Give the character fewer details. A simple design is easier to repeat.</li>
+    </ol>
+  </details>
+
+  <details><summary>The character changes during the clip</summary>
+    <p>Why: the longer and busier a shot, the more room it has to drift.</p>
+    <ol>
+      <li>Make the shot shorter, 4 to 6 seconds.</li>
+      <li>Ask for one action and one camera move, or keep the camera still.</li>
+      <li>Keep fewer things moving in the frame.</li>
+    </ol>
+  </details>
+
+  <details><summary>Hands or faces melt, or there are extra fingers</summary>
+    <p>Why: hands and faces in motion are among the hardest things for these tools.</p>
+    <ol>
+      <li>Fix the still frame first. Image changes cost no credits in Flow.</li>
+      <li>Keep hands still, out of frame, or holding something.</li>
+      <li>Move closer, so the face fills more of the frame.</li>
+      <li>Make another try and keep the best one.</li>
+    </ol>
+  </details>
+
+  <details><summary>It looks 3D or like a photo, not anime</summary>
+    <ol>
+      <li>Put the style words first in the prompt: &ldquo;Hand-drawn 2D anime style, clean line art, flat cel shading.&rdquo;</li>
+      <li>Start from a still frame that already has the look you want.</li>
+      <li>Describe what you want rather than listing what you do not want.</li>
+    </ol>
+  </details>
+
+  <details><summary>The wrong voice, or the line is said wrong</summary>
+    <ol>
+      <li>Call the saved voice with @Voice and its name (Cut 7).</li>
+      <li>Put the exact words in quotation marks and say who speaks.</li>
+      <li>Keep it to one short line and one speaker per shot.</li>
+      <li>If a name is said wrong, try spelling it the way it sounds.</li>
+    </ol>
+  </details>
+
+  <details><summary>The mouth does not match the words</summary>
+    <ol>
+      <li>Use a medium shot or a close-up, with the face toward the camera.</li>
+      <li>Keep one speaker in the shot and the head fairly still.</li>
+      <li>After three tries, change the shot: show the listener, show the speaker from far away or behind, or make the line a thought over a silent shot.</li>
+    </ol>
+  </details>
+
+  <details><summary>Music starts and stops between clips</summary>
+    <p>Why: each clip makes its own sound.</p>
+    <ol>
+      <li>Add &ldquo;No music&rdquo; to your video prompts.</li>
+      <li>Add one music track over the whole episode in the edit (Cut 9).</li>
+    </ol>
+  </details>
+
+  <details><summary>Flow says free video is not available right now</summary>
+    <p>Why: free accounts sometimes cannot make video at busy times, roughly 2 to 5 p.m. UTC. That is about 9 a.m. to noon in Ontario in winter, and 10 a.m. to 1 p.m. in summer.</p>
+    <ol>
+      <li>Make your still frames then. Images still work.</li>
+      <li>Come back to video later in the day.</li>
+    </ol>
+  </details>
+
+  <details><summary>You ran out of credits</summary>
+    <p>Why: a free account gets 50 credits a day, and unused credits do not carry over.</p>
+    <ol>
+      <li>Make drafts at 360p, which costs a third of 720p.</li>
+      <li>Set the number of outputs to 1.</li>
+      <li>Use shorter shots, and test motion on a short draft first.</li>
+      <li>Plan the tries in the Shot list before you spend.</li>
+    </ol>
+  </details>
+
+  <details><summary>The video looks blurry</summary>
+    <ol>
+      <li>360p is for drafts. Make the shots you keep again at 720p.</li>
+      <li>Google AI Plus adds 1080p upscaling, if you decide to pay later.</li>
+    </ol>
+  </details>
+
+  <details><summary>Flow will not make a prompt</summary>
+    <p>Why: AI tools refuse some prompts, such as ones that name real people or existing characters.</p>
+    <ol>
+      <li>Remove names of real people, shows, characters and brands.</li>
+      <li>Remove violent or adult details.</li>
+      <li>Follow what Flow's message says. This course did not check the full list of what Google refuses.</li>
+    </ol>
+  </details>
+
+  <details><summary>A shot ends suddenly or freezes</summary>
+    <ol>
+      <li>Trim the frozen part in your editor (Cut 9).</li>
+      <li>Plan shots a second or two longer than you need, then cut them down.</li>
+    </ol>
+  </details>
+
+  <details><summary>Your work in this app is gone</summary>
+    <p>Why: this app saves only in this browser, and the Home Screen app keeps separate data.</p>
+    <ol>
+      <li>Restore your last backup file from the Sources page.</li>
+      <li>Save a backup after each work session from now on.</li>
+    </ol>
+    <div class="actions"><a class="btn" href="#sources">Go to backups</a></div>
+  </details>
+
+  <div class="actions"><a class="btn" href="#tools">All tools</a></div>
 </section>
 
 <section data-page="tool-bible" hidden>
@@ -547,19 +775,23 @@ summary{font-family:var(--display);font-weight:600;font-size:20px;padding:12px 0
   <div class="field"><label for="charSel">Character</label><select id="charSel"></select></div>
   <div class="actions"><button type="button" class="btn" id="charNew">Add a new character</button></div>
   <div id="charForm">
-    <div class="field"><label for="c_name">Name</label><input type="text" id="c_name" data-c="name" autocomplete="off" maxlength="60"></div>
-    <div class="field"><label for="c_role">Who they are</label><span class="hint">Age range and role, like &ldquo;a shy teenage courier&rdquo;.</span><input type="text" id="c_role" data-c="role" autocomplete="off" maxlength="120"></div>
-    <div class="field"><label for="c_shape">Body shape and height</label><input type="text" id="c_shape" data-c="shape" autocomplete="off" maxlength="120"></div>
-    <div class="field"><label for="c_hair">Hair</label><input type="text" id="c_hair" data-c="hair" autocomplete="off" maxlength="120"></div>
-    <div class="field"><label for="c_eyes">Eyes and face</label><input type="text" id="c_eyes" data-c="eyes" autocomplete="off" maxlength="120"></div>
-    <div class="field"><label for="c_outfit">Outfit</label><input type="text" id="c_outfit" data-c="outfit" autocomplete="off" maxlength="160"></div>
-    <div class="field"><label for="c_colours">Three main colours</label><input type="text" id="c_colours" data-c="colours" autocomplete="off" maxlength="120"></div>
-    <div class="field"><label for="c_never">What never changes</label><span class="hint">A scar, a hair clip, a missing glove.</span><input type="text" id="c_never" data-c="never" autocomplete="off" maxlength="160"></div>
-    <div class="field"><label for="c_voice">Voice</label><span class="hint">How they sound, in your own words.</span><input type="text" id="c_voice" data-c="voice" autocomplete="off" maxlength="160"></div>
+    <div class="field"><label for="c_name">Name</label><span class="hint">What you call them. You will type this name after @ in Flow.</span><input type="text" id="c_name" data-c="name" autocomplete="off" maxlength="60"></div>
+    <div class="field"><label for="c_role">Who they are</label><span class="hint">A rough age and what they do. Example: a shy teenage courier.</span><input type="text" id="c_role" data-c="role" autocomplete="off" maxlength="120"></div>
+    <div class="field"><label for="c_shape">Body shape and height</label><span class="hint">Example: small and slim, shorter than most adults.</span><input type="text" id="c_shape" data-c="shape" autocomplete="off" maxlength="120"></div>
+    <div class="field"><label for="c_hair">Hair</label><span class="hint">Colour, length and style. Example: short silver hair with a side fringe.</span><input type="text" id="c_hair" data-c="hair" autocomplete="off" maxlength="120"></div>
+    <div class="field"><label for="c_eyes">Eyes and face</label><span class="hint">Eye colour and shape, and anything else that stands out. Example: large grey eyes and a few freckles.</span><input type="text" id="c_eyes" data-c="eyes" autocomplete="off" maxlength="120"></div>
+    <div class="field"><label for="c_outfit">Outfit</label><span class="hint">What they always wear, with the colours. Example: a yellow raincoat over a grey hoodie, red boots.</span><input type="text" id="c_outfit" data-c="outfit" autocomplete="off" maxlength="160"></div>
+    <div class="field"><label for="c_never">What never changes</label><span class="hint">One small detail that makes them easy to spot in every shot. Example: a star-shaped hair clip.</span><input type="text" id="c_never" data-c="never" autocomplete="off" maxlength="160"></div>
+    <div class="field"><label for="c_voice">Voice</label><span class="hint">How they sound, for Cut 7. It is not added to the picture prompt. Example: soft and a little shy.</span><input type="text" id="c_voice" data-c="voice" autocomplete="off" maxlength="160"></div>
 
-    <h2>Description to paste</h2>
+    <h2>Character prompt for Flow</h2>
+    <p>Your bible and the picture instructions in one. Paste it into Flow's Characters panel (Cut 3).</p>
     <p class="prompt" id="charOut"></p>
-    <div class="actions"><button type="button" class="btn btn-primary" data-copy="charOut">Copy description</button></div>
+    <div class="actions"><button type="button" class="btn btn-primary" data-copy="charOut">Copy character prompt</button></div>
+    <details><summary>Optional second picture: face close-ups</summary>
+      <p class="prompt" id="charFaces"></p>
+      <div class="actions"><button type="button" class="btn" data-copy="charFaces">Copy face prompt</button></div>
+    </details>
 
     <h2>Look-alike check</h2>
     <label class="tick"><input type="checkbox" data-ck="own"><span>I wrote this description myself. I did not start from an existing character.</span></label>
@@ -571,28 +803,41 @@ summary{font-family:var(--display);font-weight:600;font-size:20px;padding:12px 0
 </section>
 
 <section data-page="tool-shots" hidden>
-  <h1 tabindex="-1">Shot list and cost</h1>
-  <p>Add one entry for each shot. Plan three tries per shot, because most shots need more than one. Use 360p for cheap drafts and 720p for the shots you keep.</p>
+  <h1 tabindex="-1">Shot list</h1>
+  <p>The shot list is used in two stages. In Cut 2 it is your script: add one entry for each shot and write what we see and what we hear. From Cut 5, each shot also keeps its own prompt and a log of your tries, under Prompt and tries.</p>
+  <p>Length, tries and quality set the cost. Plan three tries per shot, because most shots need more than one. Use 360p for cheap drafts and 720p for the shots you keep.</p>
   <div id="shotList"></div>
   <div class="actions"><button type="button" class="btn btn-primary" id="shotAdd">Add a shot</button></div>
+  <div class="field"><label for="estTool">Price this list on</label><select id="estTool"></select></div>
   <div class="totals" aria-live="polite">
     <p><span class="lab">Running time</span><span class="big" id="tTime">0 seconds</span></p>
     <p><span class="lab">Credits for all tries</span><span class="big" id="tCred">0 credits</span></p>
     <p id="tDays"></p>
+    <p id="tCost" hidden></p>
+    <p class="unchecked" id="tWarn" hidden></p>
   </div>
-  <details>
+  <details id="estDetails">
     <summary>Prices used for this estimate</summary>
-    <p class="note">Google Flow, Omni Flash 1.2. Checked on Google's help pages on 11 Nov 2026. Change the numbers if Flow shows different ones.</p>
-    <div class="field"><label for="r360">Credits per second, 360p draft</label><input type="number" id="r360" inputmode="decimal" min="0" step="0.5"></div>
-    <div class="field"><label for="r720">Credits per second, 720p</label><input type="number" id="r720" inputmode="decimal" min="0" step="0.5"></div>
-    <div class="field"><label for="rDay">Free credits per day</label><input type="number" id="rDay" inputmode="numeric" min="1" step="1"></div>
+    <p class="note" id="estNote"></p>
+    <div id="estFlow">
+      <div class="field"><label for="r360">Credits per second, 360p draft</label><input type="number" id="r360" inputmode="decimal" min="0" step="0.5"></div>
+      <div class="field"><label for="r720">Credits per second, 720p</label><input type="number" id="r720" inputmode="decimal" min="0" step="0.5"></div>
+      <div class="field"><label for="rDay">Free credits per day</label><input type="number" id="rDay" inputmode="numeric" min="1" step="1"></div>
+    </div>
+    <div class="field" id="estCpsBox"><label for="eCps">Credits per second of video</label><span class="hint">The tool shows this before you generate.</span><input type="number" id="eCps" inputmode="decimal" min="0" step="0.5"></div>
+    <div id="estPlanBox">
+      <div class="field"><label for="eMonth">Credits a month on the plan</label><input type="number" id="eMonth" inputmode="numeric" min="0" step="1"></div>
+      <div class="field"><label for="ePrice">Plan price a month, in US dollars</label><input type="number" id="ePrice" inputmode="decimal" min="0" step="0.01"></div>
+    </div>
+    <div class="actions"><button type="button" class="btn" id="estReset">Go back to the checked prices</button></div>
   </details>
   <div class="actions"><a class="btn" href="#tools">All tools</a></div>
 </section>
 
 <section data-page="tool-prompt" hidden>
   <h1 tabindex="-1">Shot prompt builder</h1>
-  <p>Fill in what you know. The prompt builds itself below.</p>
+  <p>Fill in what you know. The prompt builds itself below. Not sure what a word means? <a href="#words">See Prompt words</a>.</p>
+  <div class="field"><label for="pb_shot">Prompt for</label><span class="hint">Pick a shot to save the prompt with it.</span><select id="pb_shot"></select></div>
   <div class="field"><label for="pb_style">Style</label><span class="hint">Describe the look. Do not name a show, a studio or an artist.</span><input type="text" id="pb_style" data-p="style" autocomplete="off" maxlength="200"></div>
   <div class="field"><label for="pb_char">Character</label><select id="pb_char" data-p="char"></select></div>
   <div class="field"><label for="pb_action">What happens</label><input type="text" id="pb_action" data-p="action" autocomplete="off" maxlength="200"></div>
@@ -607,7 +852,8 @@ summary{font-family:var(--display);font-weight:600;font-size:20px;padding:12px 0
   <h2>Your prompt</h2>
   <p class="prompt" id="pbOut"></p>
   <div class="warn" id="pbWarn" hidden><strong>Check this prompt</strong><p id="pbWarnText"></p></div>
-  <div class="actions"><button type="button" class="btn btn-primary" data-copy="pbOut">Copy prompt</button><a class="btn" href="#tools">All tools</a></div>
+  <p class="note" id="pbSaved" hidden></p>
+  <div class="actions"><button type="button" class="btn btn-primary" data-copy="pbOut">Copy prompt</button><a class="btn" id="pbBack" href="#tool-shots" hidden>Back to the shot list</a><a class="btn" href="#tools">All tools</a></div>
 </section>
 
 <section data-page="tool-check" hidden>
@@ -674,6 +920,15 @@ summary{font-family:var(--display);font-weight:600;font-size:20px;padding:12px 0
   </ul>
   <h2>Privacy</h2>
   <p>This app has no accounts and sends nothing you type to a server. Your progress, characters and shot lists are saved only in this browser, on this device. The fonts load from Google Fonts.</p>
+  <h2>Add it to your Home Screen</h2>
+  <p>On an iPhone, open this page in Safari or Chrome, tap the Share button, then choose Add to Home Screen.</p>
+  <p>The Home Screen app keeps its own saved data, separate from the browser. What you saved in the browser does not move across, and removing the Home Screen icon deletes the data saved inside it. Save a backup first.</p>
+  <h2>Backup</h2>
+  <p>A backup is a small file with your progress, characters, shot lists and ticks. Keep it somewhere safe, such as the Files app, and restore it after moving to a new phone or the Home Screen app.</p>
+  <div class="actions"><button type="button" class="btn btn-primary" id="backupSave">Save a backup file</button><button type="button" class="btn" id="backupPick">Restore from a backup file</button></div>
+  <input type="file" id="backupFile" accept=".json,application/json" hidden>
+  <p id="backupMsg" role="status"></p>
+  <h2>Start over</h2>
   <div class="actions"><button type="button" class="btn btn-danger" id="wipe">Clear my saved data</button></div>
 </section>
 
@@ -692,18 +947,75 @@ summary{font-family:var(--display);font-weight:600;font-size:20px;padding:12px 0
 'use strict';
 var KEY='ai-episode-one:v1';
 var WRITTEN=11, TOTAL=11;
-var DEF={done:[],chars:[],cur:'',shots:[],rates:{r360:1,r720:3,day:50},check:{},prompt:{style:'Hand-drawn 2D anime style with clean line art and flat cel shading'}};
+var DEF={done:[],chars:[],cur:'',shots:[],rates:{r360:1,r720:3,day:50},check:{},prompt:{style:'Hand-drawn 2D anime style with clean line art and flat cel shading'},est:{tool:'flow-free',over:{}},pshot:''};
+/* Plan facts read on each maker's own page on 11 Nov 2026. null means the page did not list it. */
+var TOOLS=[
+  {id:'flow-free',label:'Google Flow, free',flow:true,month:0,price:0,maxSecs:10,note:'Flow credit costs from Google\u2019s help pages, read 11 Nov 2026. Every Flow account gets 50 free credits a day.'},
+  {id:'flow-plus',label:'Google Flow with Google AI Plus',flow:true,month:200,price:4.99,maxSecs:15,note:'Flow credit costs from Google\u2019s help pages and the plan price from Google\u2019s plans page, read 11 Nov 2026. AI Plus adds 200 credits a month to the 50 free credits a day.'},
+  {id:'flow-pro',label:'Google Flow with Google AI Pro',flow:true,month:1000,price:19.99,maxSecs:15,note:'Flow credit costs from Google\u2019s help pages and the plan price from Google\u2019s plans page, read 11 Nov 2026. AI Pro adds 1,000 credits a month to the 50 free credits a day.'},
+  {id:'vidu',label:'Vidu, Standard plan',cps:2,month:800,price:10,maxSecs:16,note:'Read on Vidu\u2019s pricing page on 11 Nov 2026: the Q4 model at 540p costs 2 credits a second, and the plan gives 800 credits a month. Only the 540p cost was listed.'},
+  {id:'kling',label:'Kling, Standard plan',cps:null,month:660,price:8.8,note:'Read on Kling\u2019s pricing page on 11 Nov 2026: 660 credits a month for US$8.80, after a US$6.99 first month. The page did not list the cost per second of video, so type the cost Kling shows you.'},
+  {id:'dreamina',label:'Dreamina (Seedance), Basic plan',cps:null,month:1575,price:15,note:'Read on Dreamina\u2019s pricing page on 11 Nov 2026: 1,575 credits a month for US$15, after a discounted first month. The page did not list the cost per second of video, so type the cost Dreamina shows you.'},
+  {id:'other',label:'Another tool',cps:null,month:null,price:null,note:'Type the numbers from the tool\u2019s own pricing page and from the cost it shows before you generate.'}
+];
+var CHAR_FIELDS={name:60,role:120,shape:120,hair:120,eyes:120,outfit:160,colours:120,never:160,voice:160};
+var PROMPT_FIELDS={style:200,char:40,action:200,place:160,light:160,size:60,cam:60,line:120};
+function str(v,max){return typeof v==='string'?v.slice(0,max):'';}
+function okId(v){return typeof v==='string'&&/^[a-z0-9]{1,40}$/i.test(v);}
+function cnum(v,min,max){var n=typeof v==='number'?v:parseFloat(v);return isFinite(n)&&n>=min&&n<=max?n:null;}
+function toolById(id){for(var i=0;i<TOOLS.length;i++)if(TOOLS[i].id===id)return TOOLS[i];return null;}
+/* Everything read from storage or a backup file passes through here, so a bad or edited file cannot break the app. */
+function clean(o){
+  var s=JSON.parse(JSON.stringify(DEF));
+  if(!o||typeof o!=='object'||Array.isArray(o))return s;
+  if(Array.isArray(o.done))o.done.forEach(function(n){if(Number.isInteger(n)&&n>=1&&n<=TOTAL&&s.done.indexOf(n)<0)s.done.push(n);});
+  var seen={};
+  if(Array.isArray(o.chars))o.chars.slice(0,50).forEach(function(c){
+    if(!c||typeof c!=='object')return;
+    var id=okId(c.id)&&!seen[c.id]?c.id:uid();seen[id]=1;
+    var n={id:id,ck:{}};for(var f in CHAR_FIELDS)n[f]=str(c[f],CHAR_FIELDS[f]);
+    if(c.ck&&typeof c.ck==='object')['own','names','friend'].forEach(function(k){n.ck[k]=c.ck[k]===true;});
+    s.chars.push(n);
+  });
+  s.cur=okId(o.cur)?o.cur:'';
+  s.pshot=okId(o.pshot)?o.pshot:'';
+  if(Array.isArray(o.shots))o.shots.slice(0,60).forEach(function(x){
+    if(!x||typeof x!=='object')return;
+    var id=okId(x.id)&&!seen[x.id]?x.id:uid();seen[id]=1;
+    var secs=cnum(x.secs,3,15),takes=cnum(x.takes,1,6);
+    var sh={id:id,see:str(x.see,300),line:str(x.line,120),secs:secs===null?5:Math.round(secs),takes:takes===null?3:Math.round(takes),q:x.q==='720'?'720':'360',log:[]};
+    if(x.p&&typeof x.p==='object'&&!Array.isArray(x.p)){sh.p={};for(var f in PROMPT_FIELDS)sh.p[f]=str(x.p[f],PROMPT_FIELDS[f]);}
+    if(Array.isArray(x.log))x.log.slice(0,50).forEach(function(t){
+      if(!t||typeof t!=='object')return;
+      var tid=okId(t.id)&&!seen[t.id]?t.id:uid();seen[tid]=1;
+      sh.log.push({id:tid,kept:t.kept===true,note:str(t.note,200),at:/^\d{4}-\d\d-\d\d$/.test(t.at)?t.at:'',prompt:str(t.prompt,1500)});
+    });
+    s.shots.push(sh);
+  });
+  if(o.rates&&typeof o.rates==='object'){
+    var a=cnum(o.rates.r360,0,1000),b=cnum(o.rates.r720,0,1000),d=cnum(o.rates.day,1,100000);
+    if(a!==null)s.rates.r360=a;if(b!==null)s.rates.r720=b;if(d!==null)s.rates.day=d;
+  }
+  if(o.check&&typeof o.check==='object')Object.keys(o.check).forEach(function(k){if(/^[a-z][0-9]$/.test(k)&&o.check[k]===true)s.check[k]=true;});
+  if(o.prompt&&typeof o.prompt==='object')for(var pf in PROMPT_FIELDS)s.prompt[pf]=str(o.prompt[pf],PROMPT_FIELDS[pf]);
+  if(o.est&&typeof o.est==='object'){
+    if(toolById(o.est.tool))s.est.tool=o.est.tool;
+    if(o.est.over&&typeof o.est.over==='object')TOOLS.forEach(function(t){
+      var v=o.est.over[t.id];if(!v||typeof v!=='object')return;
+      s.est.over[t.id]={cps:cnum(v.cps,0,100000),month:cnum(v.month,0,10000000),price:cnum(v.price,0,100000)};
+    });
+  }
+  return s;
+}
 var S=load();
 function load(){
-  var s=JSON.parse(JSON.stringify(DEF));
-  try{var raw=localStorage.getItem(KEY);if(raw){var o=JSON.parse(raw);if(o&&typeof o==='object'){for(var k in DEF){if(Object.prototype.hasOwnProperty.call(o,k)&&typeof o[k]===typeof DEF[k]&&Array.isArray(o[k])===Array.isArray(DEF[k]))s[k]=o[k];}}}}catch(e){}
-  return s;
+  try{var raw=localStorage.getItem(KEY);if(raw)return clean(JSON.parse(raw));}catch(e){}
+  return clean(null);
 }
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 function $(id){return document.getElementById(id);}
 function el(tag,cls,text){var e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e;}
 function uid(){return 'i'+Date.now().toString(36)+Math.floor(Math.random()*1e6).toString(36);}
-function num(v,d){var n=parseFloat(v);return isFinite(n)&&n>=0?n:d;}
 
 /* ---------- router ---------- */
 var pages=[].slice.call(document.querySelectorAll('[data-page]'));
@@ -712,12 +1024,13 @@ function route(){
   var page=pages.filter(function(p){return p.getAttribute('data-page')===id;})[0];
   if(!page){id='home';page=pages[0];}
   pages.forEach(function(p){p.hidden=p!==page;});
-  var top=id.indexOf('cut-')===0?'home':id.indexOf('tool')===0?'tools':id;
+  var top=id.indexOf('cut-')===0?'home':(id.indexOf('tool')===0||id==='fixes'||id==='words')?'tools':id;
   [].forEach.call(document.querySelectorAll('[data-nav]'),function(a){if(a.getAttribute('data-nav')===top)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
   if(id==='home')renderHome();
   if(id==='tool-bible')renderBible();
   if(id==='tool-shots')renderShots();
   if(id==='tool-prompt')renderPrompt();
+  if(id==='cut-3')renderCut3();
   if(id==='tool-check')renderCheck();
   window.scrollTo(0,0);
   var h=page.querySelector('h1');if(h)h.focus({preventScroll:true});
@@ -777,13 +1090,26 @@ function describe(c){
   var out=[];
   var who=[c.name,c.role].filter(Boolean).join(', ');
   if(who)out.push(who+'.');
-  if(c.shape)out.push(c.shape+'.');
+  if(c.shape)out.push(sentence(c.shape.charAt(0).toUpperCase()+c.shape.slice(1)));
   if(c.hair)out.push('Hair: '+c.hair+'.');
   if(c.eyes)out.push('Eyes and face: '+c.eyes+'.');
   if(c.outfit)out.push('Outfit: '+c.outfit+'.');
-  if(c.colours)out.push('Main colours: '+c.colours+'.');
   if(c.never)out.push('Always has: '+c.never+'.');
   return out.join(' ');
+}
+var SHEET='Character model sheet on a plain white background. Full body, front view, side view and back view. Neutral pose. Hand-drawn 2D anime style, clean line art, flat colours.';
+var FACES='Close-ups of the same character\u2019s face showing four expressions: calm, happy, sad and surprised. Plain white background. Hand-drawn 2D anime style, clean line art, flat colours.';
+var EMPTY_BIBLE='Fill in the boxes above and your character prompt appears here.';
+function sheetPrompt(c){var d=describe(c);return d?d+' '+SHEET:'';}
+function facePrompt(c){var d=describe(c);return d?d+' '+FACES:'';}
+function showBibleOut(c){$('charOut').textContent=sheetPrompt(c)||EMPTY_BIBLE;$('charFaces').textContent=facePrompt(c)||EMPTY_BIBLE;}
+function renderCut3(){
+  var has=S.chars.length>0;$('c3Empty').hidden=has;$('c3Box').hidden=!has;if(!has)return;
+  var sel=$('c3Char');sel.textContent='';
+  S.chars.forEach(function(c,i){var o=el('option',null,charLabel(c,i));o.value=c.id;sel.appendChild(o);});
+  if(!curChar())S.cur=S.chars[0].id;sel.value=S.cur;
+  var c=curChar();$('c3Out').textContent=sheetPrompt(c)||'This character\u2019s bible is empty. Fill it in first.';
+  $('c3Faces').textContent=facePrompt(c)||'This character\u2019s bible is empty. Fill it in first.';
 }
 function charLabel(c,i){return c.name||('Character '+(i+1));}
 function renderBible(){
@@ -796,14 +1122,15 @@ function renderBible(){
   if(!c)return;
   [].forEach.call(document.querySelectorAll('[data-c]'),function(inp){inp.value=c[inp.getAttribute('data-c')]||'';});
   [].forEach.call(document.querySelectorAll('[data-ck]'),function(inp){inp.checked=!!(c.ck&&c.ck[inp.getAttribute('data-ck')]);});
-  $('charOut').textContent=describe(c)||'Fill in the boxes above and the description appears here.';
+  showBibleOut(c);
 }
+$('c3Char').addEventListener('change',function(){S.cur=this.value;save();renderCut3();});
 $('charSel').addEventListener('change',function(){S.cur=this.value;save();renderBible();});
 $('charNew').addEventListener('click',function(){var c={id:uid(),ck:{}};S.chars.push(c);S.cur=c.id;save();renderBible();$('c_name').focus();});
 $('charForm').addEventListener('input',function(e){
   var c=curChar();if(!c)return;
   var f=e.target.getAttribute('data-c'),k=e.target.getAttribute('data-ck');
-  if(f){c[f]=e.target.value;$('charOut').textContent=describe(c)||'Fill in the boxes above and the description appears here.';
+  if(f){c[f]=e.target.value;showBibleOut(c);
     if(f==='name'){var o=$('charSel').selectedOptions[0];if(o)o.textContent=charLabel(c,S.chars.indexOf(c));}}
   if(k){c.ck=c.ck||{};c.ck[k]=e.target.checked;}
   save();
@@ -826,7 +1153,7 @@ function renderShots(){
     var line=el('input');line.type='text';line.value=s.line||'';line.maxLength=120;line.autocomplete='off';line.addEventListener('input',function(){s.line=line.value;save();});
     w.appendChild(field('What we hear, or the spoken line',line,'line'+s.id));
     var row=el('div','row');
-    var secs=el('select');options(secs,[3,4,5,6,7,8,9,10].map(function(n){return [n,n+' sec'];}),s.secs);
+    var secs=el('select');options(secs,[3,4,5,6,7,8,9,10,11,12,13,14,15].map(function(n){return [n,n+' sec'];}),s.secs);
     secs.addEventListener('change',function(){s.secs=+secs.value;save();totals();});
     var takes=el('select');options(takes,[1,2,3,4,5,6].map(function(n){return [n,n+(n===1?' try':' tries')];}),s.takes);
     takes.addEventListener('change',function(){s.takes=+takes.value;save();totals();});
@@ -834,43 +1161,169 @@ function renderShots(){
     q.addEventListener('change',function(){s.q=q.value;save();totals();});
     row.appendChild(field('Length',secs,'secs'+s.id));row.appendChild(field('Tries',takes,'takes'+s.id));row.appendChild(field('Quality',q,'q'+s.id));
     w.appendChild(row);
+    var pd=el('details');pd.appendChild(el('summary',null,'Prompt and tries (from Cut 5)'));
+    if(openTries===s.id)pd.open=true;
+    pd.addEventListener('toggle',function(){if(pd.open)openTries=s.id;else if(openTries===s.id)openTries='';});
+    renderShotPrompt(pd,s,i);renderTries(pd,s,i);w.appendChild(pd);
     var act=el('div','actions');var del=el('button','btn btn-danger','Delete shot '+(i+1));del.type='button';
     del.addEventListener('click',function(){var at=S.shots.indexOf(s);S.shots.splice(at,1);save();renderShots();toast('Shot deleted.',function(){S.shots.splice(at,0,s);save();renderShots();});});
     act.appendChild(del);w.appendChild(act);box.appendChild(w);
   });
-  $('r360').value=S.rates.r360;$('r720').value=S.rates.r720;$('rDay').value=S.rates.day;
+  renderEst();
+}
+function shotById(id){for(var i=0;i<S.shots.length;i++)if(S.shots[i].id===id)return S.shots[i];return null;}
+function renderShotPrompt(w,s,i){
+  w.appendChild(el('h3',null,'Prompt'));
+  var text=s.p?promptText(s.p):'';
+  var act=el('div','actions');
+  var go=el('button','btn',text?'Edit prompt':'Build the prompt');go.type='button';
+  go.addEventListener('click',function(){S.pshot=s.id;save();location.hash='#tool-prompt';});
+  if(text){
+    var pr=el('p','prompt',text);pr.id='sp'+s.id;w.appendChild(pr);
+    var cp=el('button','btn btn-primary','Copy prompt');cp.type='button';cp.setAttribute('data-copy','sp'+s.id);act.appendChild(cp);
+  }else w.appendChild(el('p','s','No prompt yet.'));
+  act.appendChild(go);w.appendChild(act);
+}
+function today(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
+function niceDate(iso){if(!iso)return '';var p=iso.split('-');var m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+p[1]-1];return +p[2]+' '+m;}
+function triesSummary(s){
+  var n=s.log.length,k=s.log.filter(function(t){return t.kept;}).length;
+  return 'Tries: '+n+' logged of '+s.takes+' planned, '+k+' kept';
+}
+var openTries='';
+function renderTries(w,s,i){
+  var d=el('div');d.appendChild(el('h3',null,'Tries'));d.appendChild(el('p','triesSum',triesSummary(s)));
+  var note=el('input');note.type='text';note.maxLength=200;note.autocomplete='off';
+  d.appendChild(field('Note about this try (optional)',note,'note'+s.id));
+  var act=el('div','actions');
+  [[true,'Log a try I kept'],[false,'Log a try I did not keep']].forEach(function(b){
+    var btn=el('button',b[0]?'btn btn-primary':'btn',b[1]);btn.type='button';
+    btn.addEventListener('click',function(){
+      s.log.push({id:uid(),kept:b[0],note:note.value.slice(0,200),at:today(),prompt:s.p?promptText(s.p).slice(0,1500):''});
+      openTries=s.id;save();renderShots();
+    });
+    act.appendChild(btn);
+  });
+  d.appendChild(act);
+  if(s.log.length){
+    var ol=el('ol','tries');
+    s.log.forEach(function(t,j){
+      var li=el('li');
+      li.appendChild(el('p',null,'Try '+(j+1)+', '+(t.kept?'kept':'not kept')+(t.at?', '+niceDate(t.at):'')+(t.note?': '+t.note:'')));
+      if(t.prompt){var pd=el('details');pd.appendChild(el('summary',null,'Prompt used'));pd.appendChild(el('p','prompt',t.prompt));li.appendChild(pd);}
+      var a2=el('div','actions');var x=el('button','btn','Delete try '+(j+1));x.type='button';
+      x.addEventListener('click',function(){var at=s.log.indexOf(t);s.log.splice(at,1);openTries=s.id;save();renderShots();
+        toast('Try deleted.',function(){s.log.splice(at,0,t);save();renderShots();});});
+      a2.appendChild(x);li.appendChild(a2);ol.appendChild(li);
+    });
+    d.appendChild(ol);
+  }
+  w.appendChild(d);
+}
+function plan(){
+  var t=toolById(S.est.tool)||TOOLS[0],o=S.est.over[t.id]||{};
+  function pick(k){return o[k]!=null?o[k]:(t[k]!=null?t[k]:null);}
+  return {t:t,cps:t.flow?null:pick('cps'),month:pick('month'),price:pick('price')};
+}
+function setNum(id,v){var e=$(id);if(document.activeElement!==e)e.value=v==null?'':String(v);}
+function renderEst(){
+  var sel=$('estTool');
+  if(!sel.options.length)TOOLS.forEach(function(t){var o=el('option',null,t.label);o.value=t.id;sel.appendChild(o);});
+  sel.value=S.est.tool;
+  var p=plan();
+  $('estNote').textContent=p.t.note;
+  $('estFlow').hidden=!p.t.flow;$('estCpsBox').hidden=!!p.t.flow;$('estPlanBox').hidden=p.t.id==='flow-free';
+  setNum('r360',S.rates.r360);setNum('r720',S.rates.r720);setNum('rDay',S.rates.day);
+  setNum('eCps',p.cps);setNum('eMonth',p.month);setNum('ePrice',p.price);
   totals();
 }
+function money(n){return 'US$'+(Math.round(n*100)/100).toFixed(2);}
+function fmt(n){return (Math.round(n*10)/10).toLocaleString('en-CA');}
 function totals(){
-  var time=0,cred=0;
-  S.shots.forEach(function(s){time+=s.secs;cred+=s.secs*s.takes*(s.q==='720'?S.rates.r720:S.rates.r360);});
+  var p=plan(),time=0,trySecs=0,cred=0,long=0;
+  S.shots.forEach(function(s,i){
+    time+=s.secs;trySecs+=s.secs*s.takes;
+    if(p.t.flow)cred+=s.secs*s.takes*(s.q==='720'?S.rates.r720:S.rates.r360);
+    if(!long&&p.t.maxSecs&&s.secs>p.t.maxSecs)long=i+1;
+  });
+  if(!p.t.flow&&p.cps!=null)cred=trySecs*p.cps;
   cred=Math.round(cred*10)/10;
+  var known=p.t.flow||p.cps!=null;
   $('tTime').textContent=time+(time===1?' second':' seconds');
-  $('tCred').textContent=cred+(cred===1?' credit':' credits');
-  var day=S.rates.day>0?S.rates.day:50,days=Math.ceil(cred/day);
-  $('tDays').textContent=!S.shots.length?'Add a shot to see the cost.':cred<=day?'That fits in one day of free credits ('+day+' a day).':'That is about '+days+' days of free credits ('+day+' a day).';
+  $('tCred').textContent=known?fmt(cred)+(cred===1?' credit':' credits'):'Cost per second needed';
+  var line='',cost='';
+  if(!S.shots.length)line='Add a shot to see the cost.';
+  else if(!known)line='Open \u201cPrices used for this estimate\u201d and type the credits per second the tool shows.';
+  else if(p.t.flow){
+    var day=S.rates.day>0?S.rates.day:50,month=p.month||0,rest=Math.max(0,cred-month),days=Math.ceil(rest/day);
+    if(month&&cred<=month)line='That fits in the plan\u2019s '+fmt(month)+' monthly credits.';
+    else if(month)line='That uses the plan\u2019s '+fmt(month)+' monthly credits, plus about '+days+(days===1?' day':' days')+' of free credits ('+day+' a day).';
+    else line=cred<=day?'That fits in one day of free credits ('+day+' a day).':'That is about '+days+' days of free credits ('+day+' a day).';
+    if(p.price)cost='Plan price: '+money(p.price)+' a month.';
+  }else{
+    var months=p.month>0?Math.max(1,Math.ceil(cred/p.month)):0;
+    if(months===1)line='That fits in one month of the plan ('+fmt(cred)+' of '+fmt(p.month)+' credits).';
+    else if(months>1)line='That needs about '+months+' months of the plan\u2019s credits ('+fmt(p.month)+' a month).';
+    else line='Type the plan\u2019s credits a month to see how far they go.';
+    if(p.price!=null&&months)cost='Cost: about '+money(p.price*months)+(months===1?' for one month.':' for '+months+' months.');
+    else if(p.price!=null)cost='Plan price: '+money(p.price)+' a month.';
+  }
+  $('tDays').textContent=line;
+  $('tCost').textContent=cost;$('tCost').hidden=!cost;
+  var w=$('tWarn');
+  if(long){w.hidden=false;w.textContent='Shot '+long+' is longer than '+p.t.maxSecs+' seconds, the most this plan makes in one shot'+(p.t.id==='flow-free'?'. Google AI Plus or Pro allows up to 15 seconds.':'.');}
+  else w.hidden=true;
 }
+$('estTool').addEventListener('change',function(){if(toolById(this.value)){S.est.tool=this.value;save();renderEst();}});
+[['eCps','cps',100000],['eMonth','month',10000000],['ePrice','price',100000]].forEach(function(f){
+  $(f[0]).addEventListener('input',function(){
+    var id=S.est.tool,o=S.est.over[id]||(S.est.over[id]={cps:null,month:null,price:null});
+    o[f[1]]=this.value===''?null:cnum(this.value,0,f[2]);save();totals();
+  });
+});
+$('estReset').addEventListener('click',function(){
+  var t=plan().t;delete S.est.over[t.id];
+  if(t.flow)S.rates=JSON.parse(JSON.stringify(DEF.rates));
+  save();setNumForce();renderEst();
+});
+function setNumForce(){['r360','r720','rDay','eCps','eMonth','ePrice'].forEach(function(id){var e=$(id);if(document.activeElement===e)e.blur();});}
 $('shotAdd').addEventListener('click',function(){
-  var s={id:uid(),see:'',line:'',secs:5,takes:3,q:'360'};S.shots.push(s);save();renderShots();
+  var s={id:uid(),see:'',line:'',secs:5,takes:3,q:'360',log:[]};S.shots.push(s);save();renderShots();
   var t=$('see'+s.id);if(t)t.focus();
 });
 [['r360','r360'],['r720','r720'],['rDay','day']].forEach(function(p){
-  $(p[0]).addEventListener('input',function(){S.rates[p[1]]=num(this.value,DEF.rates[p[1]]);save();totals();});
+  $(p[0]).addEventListener('input',function(){var v=cnum(this.value,p[1]==='day'?1:0,p[1]==='day'?100000:1000);S.rates[p[1]]=v===null?DEF.rates[p[1]]:v;save();totals();});
 });
 
 /* ---------- prompt builder ---------- */
 var RISKY=['style of','ghibli','pixar','disney','miyazaki','shinkai','naruto','pokemon','pok\u00e9mon','dragon ball','one piece','sailor moon','demon slayer','jujutsu','attack on titan','studio trigger','kyoto animation','toei','madhouse'];
+function target(){
+  var s=shotById(S.pshot);
+  if(!s)return S.prompt;
+  if(!s.p)s.p={style:S.prompt.style||'',char:S.prompt.char||'',action:s.see||'',place:'',light:'',size:'',cam:'',line:''};
+  return s.p;
+}
+function shotLabel(s,i){var t=(s.see||'').trim();return 'Shot '+(i+1)+(t?': '+(t.length>36?t.slice(0,36)+'\u2026':t):'');}
 function renderPrompt(){
+  var ps=$('pb_shot');ps.textContent='';
+  var free=el('option',null,'Practice, not saved with a shot');free.value='';ps.appendChild(free);
+  S.shots.forEach(function(s,i){var o=el('option',null,shotLabel(s,i));o.value=s.id;ps.appendChild(o);});
+  if(!shotById(S.pshot))S.pshot='';
+  ps.value=S.pshot;
+  var p=target();
   var sel=$('pb_char');sel.textContent='';
   var none=el('option',null,'No saved character');none.value='';sel.appendChild(none);
   S.chars.forEach(function(c,i){var o=el('option',null,charLabel(c,i));o.value=c.id;sel.appendChild(o);});
-  [].forEach.call(document.querySelectorAll('[data-p]'),function(inp){inp.value=S.prompt[inp.getAttribute('data-p')]||'';});
-  if(sel.value!==(S.prompt.char||''))sel.value='';
+  [].forEach.call(document.querySelectorAll('[data-p]'),function(inp){inp.value=p[inp.getAttribute('data-p')]||'';});
+  if(sel.value!==(p.char||''))sel.value='';
+  var on=!!S.pshot;$('pbBack').hidden=!on;$('pbSaved').hidden=!on;
+  if(on)$('pbSaved').textContent='Saved with '+ps.options[ps.selectedIndex].textContent.split(':')[0]+' as you type.';
   buildPrompt();
 }
+$('pb_shot').addEventListener('change',function(){S.pshot=shotById(this.value)?this.value:'';save();renderPrompt();});
 function sentence(t){t=(t||'').trim();if(!t)return '';return /[.!?]$/.test(t)?t:t+'.';}
-function buildPrompt(){
-  var p=S.prompt,out=[];
+function promptText(p){
+  var out=[];
   var c=S.chars.filter(function(x){return x.id===p.char;})[0];
   if(p.style)out.push(sentence(p.style));
   if(p.size)out.push(sentence(p.size));
@@ -880,14 +1333,17 @@ function buildPrompt(){
   if(p.light)out.push(sentence(p.light));
   if(p.cam)out.push(sentence(p.cam));
   if(p.line&&p.line.trim())out.push('The character says: "'+p.line.trim().replace(/"/g,'')+'"');
-  var text=out.join(' ');
+  return out.join(' ');
+}
+function buildPrompt(){
+  var text=promptText(target());
   $('pbOut').textContent=text||'Your prompt appears here.';
   var low=text.toLowerCase(),hits=RISKY.filter(function(w){return low.indexOf(w)>-1;});
   $('pbWarn').hidden=!hits.length;
   if(hits.length)$('pbWarnText').textContent='This prompt mentions an existing work, studio or artist ("'+hits[0]+'"). Describe the look in your own words instead.';
 }
 document.querySelector('[data-page="tool-prompt"]').addEventListener('input',function(e){
-  var f=e.target.getAttribute('data-p');if(!f)return;S.prompt[f]=e.target.value;save();buildPrompt();
+  var f=e.target.getAttribute('data-p');if(!f)return;target()[f]=e.target.value.slice(0,PROMPT_FIELDS[f]);save();buildPrompt();
 });
 
 /* ---------- checklist ---------- */
@@ -898,6 +1354,34 @@ document.querySelector('[data-page="tool-check"]').addEventListener('change',fun
 $('checkClear').addEventListener('click',function(){
   var old=S.check;S.check={};save();renderCheck();
   toast('Ticks cleared.',function(){S.check=old;save();renderCheck();});
+});
+
+/* ---------- backup ---------- */
+function msg(t){$('backupMsg').textContent=t;}
+$('backupSave').addEventListener('click',function(){
+  try{
+    var blob=new Blob([JSON.stringify({app:'ai-episode-one',version:1,saved:new Date().toISOString(),data:S},null,1)],{type:'application/json'});
+    var a=document.createElement('a'),url=URL.createObjectURL(blob);
+    a.href=url;a.download='ai-episode-one-backup-'+new Date().toISOString().slice(0,10)+'.json';
+    document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},4000);
+    msg('Backup file made. Check that it was saved before you rely on it.');
+  }catch(e){msg('The backup file could not be made on this device.');}
+});
+$('backupPick').addEventListener('click',function(){$('backupFile').value='';$('backupFile').click();});
+$('backupFile').addEventListener('change',function(){
+  var f=this.files&&this.files[0];if(!f)return;
+  if(f.size>1000000){msg('That file is too large to be a backup from this app.');return;}
+  var r=new FileReader();
+  r.onerror=function(){msg('That file could not be read.');};
+  r.onload=function(){
+    var o;try{o=JSON.parse(String(r.result));}catch(e){msg('That file is not a backup from this app.');return;}
+    if(!o||o.app!=='ai-episode-one'||!o.data||typeof o.data!=='object'){msg('That file is not a backup from this app.');return;}
+    if(!window.confirm('Replace what is saved in this app with this backup?'))return;
+    var old=S;S=clean(o.data);save();
+    msg('Backup restored: '+S.done.length+' cuts done, '+S.chars.length+' characters, '+S.shots.length+' shots.');
+    toast('Backup restored.',function(){S=old;save();msg('Restore undone.');});
+  };
+  r.readAsText(f);
 });
 
 /* ---------- privacy ---------- */
